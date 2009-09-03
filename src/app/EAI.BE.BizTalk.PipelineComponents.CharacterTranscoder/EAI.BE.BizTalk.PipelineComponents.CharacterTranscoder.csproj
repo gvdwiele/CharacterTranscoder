@@ -1,0 +1,78 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4B7CC2E7-0AF8-465B-9069-8EAFEC604255}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EAI.BE.BizTalk.PipelineComponents</RootNamespace>
+    <AssemblyName>EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Biztalk.Messaging, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\Microsoft BizTalk Server 2006\Microsoft.Biztalk.Messaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.BizTalk.Pipeline, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\Microsoft BizTalk Server 2006\Microsoft.BizTalk.Pipeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.XLANGs.BaseTypes, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\Microsoft BizTalk Server 2006\Microsoft.XLANGs.BaseTypes.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CharacterTranscoderComponent.cs" />
+    <Compile Include="Design\EncodingListControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Design\EncodingTypeConverter.cs" />
+    <Compile Include="Design\EncodingTypeEditor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TranscodingStream.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CharacterTranscoder.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.Schemas\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.Schemas.btproj">
+      <Project>{AC02D6F8-5F5B-4E3F-918A-CF3463886967}</Project>
+      <Name>EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.Schemas</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
