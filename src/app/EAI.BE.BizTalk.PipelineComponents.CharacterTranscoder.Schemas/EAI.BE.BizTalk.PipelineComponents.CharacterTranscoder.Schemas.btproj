@@ -9,7 +9,7 @@
                 <EditorCommon/>
                 <ProjectCommon
                     AssemblyKeyName = ""
-                    AssemblyKeyFile = ""
+                    AssemblyKeyFile = "..\..\..\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder\CharacterTranscoder.snk"
                     AssemblyDelaySign = "False"
                     AssemblyTitle = ""
                     AssemblyDescription = ""
