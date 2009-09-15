@@ -9,7 +9,7 @@
                 <EditorCommon/>
                 <ProjectCommon
                     AssemblyKeyName = ""
-                    AssemblyKeyFile = ""
+                    AssemblyKeyFile = "C:\Program Files\Microsoft.NET\Keys\CharacterTranscoder.snk"
                     AssemblyDelaySign = "False"
                     AssemblyTitle = ""
                     AssemblyDescription = ""
