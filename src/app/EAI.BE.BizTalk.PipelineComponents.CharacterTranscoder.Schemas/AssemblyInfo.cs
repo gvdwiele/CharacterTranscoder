@@ -18,8 +18,7 @@
 [assembly: System.Reflection.AssemblyCulture("")]
 [assembly: System.Reflection.AssemblyVersion("1.0.0.0")]
 [assembly: System.Reflection.AssemblyDelaySign(false)]
-[assembly: System.Reflection.AssemblyKeyFile("..\\..\\..\\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder\\CharacterTranscode" +
-    "r.snk")]
+[assembly: System.Reflection.AssemblyKeyFile("C:\\Program Files\\Microsoft.NET\\Keys\\CharacterTranscoder.snk")]
 [assembly: System.Reflection.AssemblyKeyName("")]
 [assembly: System.Reflection.AssemblyDefaultAlias("")]
 [assembly: System.Reflection.AssemblyFileVersion("1.0.0.0")]
