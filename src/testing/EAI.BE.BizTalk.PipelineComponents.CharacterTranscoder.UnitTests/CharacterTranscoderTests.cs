@@ -56,7 +56,6 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
             Assert.IsTrue(ByteArrayCompare(output, expected));
         }
 
-
         [TestMethod]
         public void NoFullRead()
         {
