@@ -79,6 +79,7 @@
     <Compile Include="Design\EncodingTypeEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TranscodingStream.cs" />
+    <Compile Include="WindowsNewLineStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CharacterTranscoder.resx">

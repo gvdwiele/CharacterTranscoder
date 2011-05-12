@@ -68,14 +68,14 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
         public override void Flush()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new System.NotImplementedException();
         }
 
         public override long Length
         {
             get 
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new System.NotImplementedException();
             }
         }
 
@@ -87,7 +87,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new System.NotImplementedException();
             }
         }
 
@@ -193,17 +193,17 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new System.NotImplementedException();
         }
 
         public override void SetLength(long value)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new System.NotImplementedException();
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new System.NotImplementedException();
         }
 
         // base close will call dispose below, so inner stream will effectively be close (streamreader closes stream inside dispose)
