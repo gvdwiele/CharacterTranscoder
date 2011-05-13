@@ -82,40 +82,53 @@ namespace EAI.BE.BizTalk.PipelineComponents
             int read = 0;
             int next, nextnext;
 
-            if (_bufferFilled)
+            do
             {
-                next = _buffer.Dequeue();
-                _bufferFilled = _buffer.Count > 0;
-            }
-            else 
-            {
-                //effective read;
-                next = _stream.ReadByte();
-                if (next == -1)
+                if (_bufferFilled)
                 {
-                    return next;
-                }
-                if (next == CR)
-                {
-                    //check if next is LF, insert when different
-                    nextnext = _stream.ReadByte();
-                    if (nextnext != LF)
+                    next = _buffer.Dequeue();
+                    if (next == -1)
                     {
-                        _buffer.Enqueue(LF);
+                        return read;
                     }
-                    _buffer.Enqueue(nextnext);
-                    _bufferFilled = true;
+                    _bufferFilled = _buffer.Count > 0;
+                }
+                else
+                {
+                    //effective read;
+                    next = _stream.ReadByte();
+                    if (next == -1)
+                    {
+                        return read;
+                    }
+                    if (next == CR)
+                    {
+                        //check if followed by LF
+                        nextnext = _stream.ReadByte();
+                        if (nextnext != LF)
+                        {
+                            _buffer.Enqueue(LF);
+                        }
+                        _buffer.Enqueue(nextnext);
+                        _bufferFilled = true;
+                    }
+                    if (next == LF)
+                    {
+                        //LF with missing CR
+                        next = CR;
+                        _buffer.Enqueue(LF);
+                        _bufferFilled = true;
+                    }
+                }
+
+                buffer[offset + read] = (byte)next;
+                read++;
+                if (read == count)
+                {
+                    return read;
                 }
             }
-            
-            if(next == -1)
-            {
-                return -1;
-            }
-            buffer[offset + read] = (byte)next;
-            read++;
-
-            return read;
+            while (true);
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -133,6 +146,6 @@ namespace EAI.BE.BizTalk.PipelineComponents
             throw new System.NotImplementedException();
         }
 
-       
+
     }
 }

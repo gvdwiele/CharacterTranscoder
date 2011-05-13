@@ -40,6 +40,44 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
 
         }
 
+
+        [TestMethod]
+        public void ReadMultipleBytes()
+        {
+            string value = "ABC";
+            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
+            byte[] output = new byte[3];
+
+            Stream after = new WindowsNewLineStream(new MemoryStream(bytesUTF8));
+
+            int count;
+
+            count = after.Read(output, 0, 3);
+            Assert.AreEqual<int>(3, count);
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { A, B, C }));
+
+        }
+
+
+        [TestMethod]
+        public void TryReadBeyondEOS()
+        {
+            string value = "ABC";
+            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
+            byte[] output = new byte[3];
+
+            Stream after = new WindowsNewLineStream(new MemoryStream(bytesUTF8));
+
+            int count;
+
+            count = after.Read(output, 0, 5);
+            Assert.AreEqual<int>(3, count);
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { A, B, C }));
+            count = after.Read(output, 0, 5);
+            Assert.AreEqual<int>(0, count);
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { A, B, C }));
+        }
+
         [TestMethod]
         public void WhenEOSorEMptyStreamReturnMinusOne()
         {
@@ -50,7 +88,7 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
             int count;
 
             count = after.Read(output, 0, 1);
-            Assert.AreEqual<int>(-1, count);
+            Assert.AreEqual<int>(0, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { 0, 0, 0 }));
         }
 
@@ -75,6 +113,66 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
             Assert.AreEqual<int>(1, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF, WindowsNewLineStreamTests.A }));
 
+        }
+
+        [TestMethod]
+        public void PassthruWindowsNewLine()
+        {
+            byte[] output = new byte[3];
+
+            Stream after = new WindowsNewLineStream(new MemoryStream(new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF, WindowsNewLineStreamTests.A }));
+
+            int count;
+
+            count = after.Read(output, 0, 1);
+            Assert.AreEqual<int>(1, count);
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, 0, 0 }));
+
+            count = after.Read(output, 1, 1);
+            Assert.AreEqual<int>(1, count);
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF, 0 }));
+
+            count = after.Read(output, 2, 1);
+            Assert.AreEqual<int>(1, count);
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF, WindowsNewLineStreamTests.A }));
+
+        }
+
+        [TestMethod]
+        public void CarriageReturnAtEOS()
+        {
+            byte[] output = new byte[2];
+
+            Stream after = new WindowsNewLineStream(new MemoryStream(new byte[] { WindowsNewLineStream.CR}));
+
+            int count;
+
+            count = after.Read(output, 0, 1);
+            Assert.AreEqual<int>(1, count);
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, 0 }));
+
+            count = after.Read(output, 1, 1);
+            Assert.AreEqual<int>(1, count);
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF}));
+
+            count = after.Read(output, 2, 1);
+            Assert.AreEqual<int>(0, count);
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF }));
+
+        }
+
+        [TestMethod]
+        public void InsertCRWhenMissing()
+        {
+            byte[] output = new byte[4];
+
+            Stream after = new WindowsNewLineStream(new MemoryStream(new byte[] { WindowsNewLineStream.LF, WindowsNewLineStream.LF }));
+
+            int count;
+
+            count = after.Read(output, 0, 4);
+            Assert.AreEqual<int>(4, count);
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF, WindowsNewLineStream.CR, WindowsNewLineStream.LF }));
         }
 
         static bool ByteArrayCompare(byte[] a1, byte[] a2)
