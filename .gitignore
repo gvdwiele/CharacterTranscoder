@@ -1,5 +1,5 @@
 build/
-lib/
+ignore/
 bin/
 TestResults/
 debug/

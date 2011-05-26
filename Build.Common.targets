@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Deployment Framework for BizTalk 5.0
+  Copyright (C) 2008-2010 Thomas F. Abraham and Scott Colestock
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Release">
+ 
+  <PropertyGroup>
+    <BaseLibraryTargetsFolder Condition="'$(BaseLibraryTargetsFolder)' == ''">$(MSBuildThisFileDirectory)\</BaseLibraryTargetsFolder>
+    </PropertyGroup>
+
+  <Import Project="$(BaseLibraryTargetsFolder)solvIT.BaseLibrary.Build.Targets" />
+  <Import Project="$(BaseLibraryTargetsFolder)UpdateVersion.Targets" />
+  <Import Project="$(BaseLibraryTargetsFolder)Git.Targets" />
+  
+  <Target Name="ValidateSettings">
+    <!--http://stackoverflow.com/questions/2740827/msbuild-validating-properties-->
+    <ItemGroup>
+      <_RequiredProperties Include="GitFolder">
+        <Value>$(GitFolder)</Value>
+      </_RequiredProperties>
+      <_RequiredProperties Include="DotNetVersionAssemblyInfoFilePath">
+        <Value>$(DotNetVersionAssemblyInfoFilePath)</Value>
+      </_RequiredProperties>
+      <_RequiredProperties Include="FileVersionAssemblyInfoFilePath">
+        <Value>$(FileVersionAssemblyInfoFilePath)</Value>
+      </_RequiredProperties>
+      <_RequiredProperties Include="InfoVersionAssemblyInfoFilePath">
+        <Value>$(InfoVersionAssemblyInfoFilePath)</Value>
+      </_RequiredProperties>
+      <_RequiredProperties Include="GitRemote">
+        <Value>$(GitRemote)</Value>
+      </_RequiredProperties>
+      <!-- 
+      _RequiredItems has specific custom metadata.
+      Required metadata:
+      Identity          = This will be used to identify the specific required item
+      RequiredValue     = This is the specific value that will ve validated to exist
+      Optional metadata:
+      RequiredFilePath  = If populated, then check
+      -->
+      <!--<_RequiredItems Include=" Configurations ">
+        <RequiredValue>@(Configurations)</RequiredValue>
+      </_RequiredItems>
+      <_RequiredItems Include=" Configurations.Configuration ">
+        <RequiredValue>%(Configurations.Configuration)</RequiredValue>
+      </_RequiredItems>-->
+    </ItemGroup>
+    <!-- Raise an error if any value in _RequiredProperties is missing -->
+    <Error Condition =" '%(_RequiredProperties.Value)'=='' "
+            Text=" Missing required property [%(_RequiredProperties.Identity)]" />
+
+    <!-- Raise an error if any value in _RequiredItems is empty --><!--
+    <Error Condition = " '%(_RequiredItems.RequiredValue)'=='' "
+            Text = " Missing required item value [%(_RequiredItems.Identity)] " />
+
+    --><!-- Validate any file/directory that should exist --><!--
+    <Error Condition = " '%(_RequiredItems.RequiredFilePath)' != '' and !Exists('%(_RequiredItems.RequiredFilePath)') "
+            Text = " Unable to find expeceted path [%(_RequiredItems.RequiredFilePath)] on item [%(_RequiredItems.Identity)] " />-->
+  </Target>
+
+  <PropertyGroup>
+    <ReleaseDependsOn>
+      ValidateSettings;
+      BeforeRelease;
+      CoreRelease;
+      AfterRelease;
+      $(ReleaseDependsOn)
+    </ReleaseDependsOn>
+  </PropertyGroup>
+  <Target Name="Release" DependsOnTargets=" $(ReleaseDependsOn)"/>
+  <Target Name="BeforeRelease" />
+  <Target Name="AfterRelease" />
+
+  <Target Name="CoreRelease" DependsOnTargets="Clean;StopWhenDirty;UpdateVersions;Compile;Package" />
+  <Target Name="Clean" DependsOnTargets="CleanSolutionOutput"/>
+  <Target Name="Compile" DependsOnTargets="CompileCode"/>
+  <Target Name="Package" DependsOnTargets="ReadSHA;ReadVersions"/>
+
+  <Target Name="UpdateVersions" DependsOnTargets="ReadSHA">
+    <MSBuild Targets="UpdateVersion"
+             Properties="Build=BuildDay;Revision=Automatic;InputFile=$(FileVersionAssemblyInfoFilePath);OutputFile=$(FileVersionAssemblyInfoFilePath);Version=File"
+             Projects="$(MSBuildProjectFile)"/>
+    <MSBuild Targets="UpdateVersion"
+             Properties="Pin=$(SHA);Revision=Automatic;InputFile=$(InfoVersionAssemblyInfoFilePath);OutputFile=$(InfoVersionAssemblyInfoFilePath);Version=Info"
+             Projects="$(MSBuildProjectFile)"/>
+  </Target>
+
+  <Target Name="CleanSolutionOutput">
+    <!--<ItemGroup>
+      <BuildOutput Include="$(MSBuildProjectDirectory)\**\obj\**\*.*"/>
+      <BuildOutput Include="$(MSBuildProjectDirectory)\**\bin\**\*.*"/>
+      <BuildOutput Include="$(OutputPath)\**\*.*"/>
+    </ItemGroup>
+    <Delete Files="@(BuildOutput)"/>-->
+    <RemoveDir Directories="$(OutputPath)"/>
+  </Target>
+
+  <Target Name="InitSolutionOutput">
+    <MakeDir Directories="$(OutputPath)" />
+  </Target>
+
+  <Target Name="CompileCode">
+    <!--Outputs="%(AllConfiguration.Configuration)"-->
+    <PropertyGroup>
+      <!--<CurrentConfig>%(Configurations.Configuration)</CurrentConfig>-->
+      <CurrentConfig>$(Configuration)</CurrentConfig>
+    </PropertyGroup>
+    <Message Text=" Building project [%(ProjectsToBuild.Identity)] for configuration [$(CurrentConfig)]" Importance="high" Condition=" '@(ProjectsToBuild)'!=''" />
+    <MSBuild Projects="@(ProjectsToBuild)" Properties="Configuration=$(CurrentConfig)" Condition=" '@(ProjectsToBuild)'!=''" >
+      <Output TaskParameter="TargetOutputs" ItemName="AssembliesBuilt"/>
+    </MSBuild>
+    <MSBuild Projects="@(SolutionToBuild)" Properties="Configuration=$(CurrentConfig)" Condition=" '@(SolutionToBuild)'!=''" >
+      <Output TaskParameter="TargetOutputs" ItemName="AssembliesBuilt"/>
+    </MSBuild>
+    <Message Text="AssembliesBuilt: @(AssembliesBuilt)" Importance="high"/>
+  </Target>
+
+  <Target Name="DistributeAssembliesBuilt" >
+    <Copy SourceFiles="@(AssembliesBuilt)" 
+          DestinationFiles="@(AssembliesBuilt->'$(DistributionFolder)%(Filename)\Latest\%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(AssembliesBuilt)"
+          DestinationFiles="@(AssembliesBuilt->'$(DistributionFolder)%(Filename)\Specific\$(FileVersion)\%(Filename)%(Extension)')" />
+  </Target>
+
+</Project>

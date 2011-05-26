@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <ProjectGroup>Sea-Invest</ProjectGroup>
+    <ProjectName>CharacterTranscoder</ProjectName>
+    <CommonReferencesFolder>t:\DropBox\</CommonReferencesFolder>
+    <GitFolder>C:\Program Files (x86)\Git\bin\</GitFolder>
+    <GitRemote>origin</GitRemote>
+    <IgnoreFolder>$(MSBuildThisFileDirectory)\ignore\</IgnoreFolder>
+    <DotNetVersionAssemblyInfoFilePath>$(MSBuildThisFileDirectory)\commonassemblyinfo.cs</DotNetVersionAssemblyInfoFilePath>
+    <FileVersionAssemblyInfoFilePath>$(IgnoreFolder)commonassemblyversioninfo.cs</FileVersionAssemblyInfoFilePath>
+    <InfoVersionAssemblyInfoFilePath>$(IgnoreFolder)commonassemblyversioninfo.cs</InfoVersionAssemblyInfoFilePath>
+    <Configuration>Release</Configuration>
+    <OutputPath>$(MSBuildThisFileDirectory)build\$(Configuration)\</OutputPath>
+    <DeploymentFrameworkTargetsPath>$(SharedMSBuildExtensionsFolder)\DeploymentFrameworkForBizTalk\5.0 - Custom\</DeploymentFrameworkTargetsPath>
+  </PropertyGroup>
+
+  <Target Name="Dummy"></Target>
+
+</Project>

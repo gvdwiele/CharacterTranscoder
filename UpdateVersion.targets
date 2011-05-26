@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <UpdateVersionTasksFolder Condition="'$(UpdateVersionTasksFolder)' == ''">lib\</UpdateVersionTasksFolder>
+    <UpdateVersionTasksLib>$(UpdateVersionTasksFolder)UpdateVersionTasks.dll</UpdateVersionTasksLib>
+  </PropertyGroup>
+
+  <UsingTask AssemblyFile="$(UpdateVersionTasksLib)" TaskName="UpdateVersion" />
+
+  <!--
+  
+  Updated version of http://code.mattgriffith.net/UpdateVersion/
+  
+  <PropertyGroup>
+		<StartDate></StartDate>
+		<Build></Build>
+		<Pin></Pin>
+		<Revision></Revision>
+		<InputFile></InputFile>
+		<Input></Input>
+		<UpdatedInput></UpdatedInput>
+		<Version></Version>
+	</PropertyGroup>
+  
+  Startdate
+  Any date string which DateTime can parse for the current culture. Example: 2002-11-23
+  The date the project started. The startdate option is required if the MonthDay build type is specified. Otherwise the startdate option is ignored.
+
+  Build
+  "Fixed" | "MonthDay" | "Increment" | “BuildDay”
+  Specifies the algorithm UpdateVersion should use to calculate the build number. The default is "Fixed" meaning the build number will remain the same if you do not specify one of the other build algorithms. “MonthDay” calculates the build number based on [monthssincestart][dayofmonth]. “BuildDay” calculates the build number based on [lastdigitofyear][dayofyear].
+
+  Pin
+  A version number in the x.x.x.x format.
+  Specifies the version number UpdateVersion should output. The pin option allows you to pin the version number.
+
+  Revision
+  "Fixed" | "Automatic" | "Increment" |
+  Specifies the algorithm UpdateVersion should use to calculate the revision number. "Automatic" calculates the revision number based on [secsincemidnight/10]. "Increment" calculates the revision number by incrementing the current revision number by one. "Fixed" causes the revision number to remain the same.
+
+  Inputfile
+  Path to an existing file.
+  The file UpdateVersion should use as the input. If the inputfile option is not present UpdateVersion will use the standard input stream as its input.
+
+  Outputfile
+  A valid filename.
+  The file UpdateVersion should write its output to. If the outputfile option is not present UpdateVersion will write its output to the standard output stream.
+
+  Version
+  "Assembly" | "File" | "Info"
+  Specifies the version number to update. The default is "Assembly" which is backward compatible with previous versions of UpdateVersion.
+  Use "–v Assembly" to update the AssemblyVersion attribute. Use "–v File" to update the AssemblyFileVersion attribute. Use "–v Info" to update the AssemblyInformationalVersion attribute.
+  -->
+
+  <Target Name="UpdateVersion">
+    <Message Text="UpdateVersion: $(AssemblyInfoFilePath)" Importance="high" />
+	  <Message Text="Revision: $(Revision)" Importance="high" />
+	  <Message Text="InputFile: $(InputFile)" Importance="high" />
+	  <Message Text="OutputFile: $(OutputFile)" Importance="high" />
+	  <Message Text="Version: $(Version)" Importance="high" />
+	  <Message Text="Pin: $(Pin)" Importance="high" />
+	  
+    <UpdateVersion Build="$(Build)" Revision="$(Revision)" InputFile="$(InputFile)" OutputFile="$(OutputFile)" Version="$(Version)"  Condition=" '$(Pin)'=='' ">
+      <Output TaskParameter="UpdatedInput" PropertyName="UpdateVersionOutput" />
+    </UpdateVersion>
+    <UpdateVersion Pin="$(Pin)" InputFile="$(InputFile)" OutputFile="$(OutputFile)" Version="$(Version)" Condition=" '$(Pin)'!='' ">
+      <Output TaskParameter="UpdatedInput" PropertyName="UpdateVersionOutput" />
+    </UpdateVersion>
+
+    <Message Text="UpdateVersion Output: $(UpdateVersionOutput)" Importance="high" />
+  </Target>
+
+</Project>

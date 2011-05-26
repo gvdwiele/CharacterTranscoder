@@ -1,3 +1,4 @@
 Shared\Libraries\Microsoft BizTalk Server\Specific\3.9.469.0\Microsoft.XLANGs.BaseTypes.dll
 Shared\Libraries\Microsoft BizTalk Server\Specific\3.9.469.0\Microsoft.BizTalk.Messaging.dll
 Shared\Libraries\Microsoft BizTalk Server\Specific\3.9.469.0\Microsoft.BizTalk.Pipeline.dll
+Shared\Libraries\MSBuild\solvIT.BaseLibrary.Build\solvIT.BaseLibrary.Build.dll

@@ -1,10 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder", "src\app\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.csproj", "{4B7CC2E7-0AF8-465B-9069-8EAFEC604255}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder", "EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.csproj", "{4B7CC2E7-0AF8-465B-9069-8EAFEC604255}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.Schemas", "src\app\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.Schemas\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.Schemas.btproj", "{AC02D6F8-5F5B-4E3F-918A-CF3463886967}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.Schemas", "EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.Schemas\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.Schemas.btproj", "{AC02D6F8-5F5B-4E3F-918A-CF3463886967}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests", "src\testing\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests.csproj", "{B863C437-8907-4091-A57D-D79D122C9C4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests", "EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests.csproj", "{B863C437-8907-4091-A57D-D79D122C9C4E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9AF13948-14A6-4F0E-87B0-85D1B4D290CA}"
 	ProjectSection(SolutionItems) = preProject

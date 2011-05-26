@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Deployment Framework for BizTalk 5.0
+  Copyright (C) 2008-2010 Thomas F. Abraham and Scott Colestock
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Deploy">
+
+  <Target Name="ReadSHA">
+    <PropertyGroup Condition="'$(SHAFile)' == ''">
+      <SHAFile>$(IgnoreFolder)sha_tmp.txt</SHAFile>
+    </PropertyGroup>
+    <Exec Command="git rev-parse HEAD > &quot;$(SHAFile)&quot;" />
+    <ReadLinesFromFile File="$(SHAFile)">
+      <Output TaskParameter="Lines" ItemName="SHAFileLines"/>
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <SHA>@(SHAFileLines->'%(Identity)', '%0a%0d')</SHA>
+    </PropertyGroup>
+    <Message Text="Git SHA: $(SHA)" Importance="high" />
+  </Target>
+
+  <Target Name="Tag">
+    <Message Text="IgnoreFolder: $(IgnoreFolder)" Importance="high" />
+    <PropertyGroup Condition="'$(TagFile)' == ''">
+      <TagFile>$(IgnoreFolder)tag_tmp.txt</TagFile>
+    </PropertyGroup>
+    <Exec Command="git tag -a &quot;$(FileVersion)&quot; -m &quot;Automated Release&quot; > &quot;$(TagFile)&quot;" />
+    <ReadLinesFromFile File="$(TagFile)">
+      <Output TaskParameter="Lines" ItemName="TagFileLines"/>
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <Tag>@(TagFileLines->'%(Identity)', '%0a%0d')</Tag>
+    </PropertyGroup>
+    <Message Text="Git Tag: $(Tag)" />
+  </Target>
+
+  <Target Name="PushTags">
+    <Exec Command="git push --tag &quot;$(Remote)&quot;" Condition=" '$(Remote)' != '' " />
+    <Exec Command="git push --tag " Condition=" '$(Remote)' == '' " />
+  </Target>
+
+  <Target Name="StopWhenDirty">
+    <PropertyGroup Condition="'$(GitStatusFile)' == ''">
+      <GitStatusFile>$(IgnoreFolder)status_tmp.txt</GitStatusFile>
+    </PropertyGroup>
+    <Exec Command="git diff-files --quiet" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+    </Exec>
+    <Error Text="You have unstaged changes in the working folder" Condition="'$(ErrorCode)' > '0'" />
+    <Exec Command="git diff-index --quiet --cached HEAD" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+    </Exec>
+    <Error Text="You have staged but uncommitted files" Condition="'$(ErrorCode)' > '0'" />
+    <Exec Command="git status --porcelain > &quot;$(GitStatusFile)&quot;" />
+    <Message Text="Git status: $(GitStatus)" />
+    <ReadLinesFromFile File="$(GitStatusFile)">
+      <Output TaskParameter="Lines" ItemName="GitStatusFileLines"/>
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <GitStatus>@(GitStatusFileLines->'%(Identity)', '%0a%0d')</GitStatus>
+    </PropertyGroup>
+    <Error Text="You have untracked files" Condition="'$(GitStatus)' != '' " />
+  </Target>
+
+  <Target Name="Sync">
+    <Exec Command="git diff-index --quiet --cached $(origin)/HEAD" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+    </Exec>
+    <Error Text="Your branch is ahead/behind the remote" Condition="'$(ErrorCode)' > '0'" />
+  </Target>
+
+</Project>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Deployment Framework for BizTalk 5.0
+  Copyright (C) 2008-2010 Thomas F. Abraham and Scott Colestock
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Deploy">
+
+  <Import Project="CommonProperties.proj"/>
+  <Import Project="solvIT.BaseLibrary.Build.Targets" />
+  <Import Project="Build.Common.Targets" />
+
+  <!--Solutions to build, when compiling as a whole: less versability-->
+  <ItemGroup>
+    <SolutionToBuild Include="CharacterTranscoder.sln"/>
+  </ItemGroup>
+
+  
+</Project>

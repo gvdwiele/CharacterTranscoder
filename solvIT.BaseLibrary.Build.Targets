@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <BaseLibraryBuildTasksLib>lib\solvIT.BaseLibrary.Build.dll</BaseLibraryBuildTasksLib>
+  </PropertyGroup>
+
+  <UsingTask AssemblyFile="$(BaseLibraryBuildTasksLib)" TaskName="ReadAssemblyVersions" />
+  <UsingTask AssemblyFile="$(BaseLibraryBuildTasksLib)" TaskName="ReadVersionAttributes"  />
+
+  <Target Name="ReadVersions">
+    
+    <ReadVersionAttributes PathToSourceFile="$(DotNetVersionAssemblyInfoFilePath)" Condition=" '$(DotNetVersionAssemblyInfoFilePath)'!='' ">
+      <Output TaskParameter="Version" PropertyName="DotNetVersion" />
+    </ReadVersionAttributes>
+    <ReadVersionAttributes PathToSourceFile="$(FileVersionAssemblyInfoFilePath)" Condition=" '$(FileVersionAssemblyInfoFilePath)'!='' ">
+      <Output TaskParameter="FileVersion" PropertyName="FileVersion" />
+    </ReadVersionAttributes>
+    <ReadVersionAttributes PathToSourceFile="$(InfoVersionAssemblyInfoFilePath)" Condition=" '$(InfoVersionAssemblyInfoFilePath)'!='' ">
+      <Output TaskParameter="ProductVersion" PropertyName="InfoVersion" />
+    </ReadVersionAttributes>
+
+    <Message Text="ReadVersion DotNetVersion: $(DotNetVersion)" Importance="high"  Condition=" '$(DotNetVersionAssemblyInfoFilePath)'!='' " />
+    <Message Text="ReadVersion FileVersion: $(FileVersion)" Importance="high"  Condition=" '$(FileVersionAssemblyInfoFilePath)'!='' " />
+    <Message Text="ReadVersion InfoVersion: $(InfoVersion)" Importance="high"  Condition=" '$(InfoVersionAssemblyInfoFilePath)'!='' " />
+  </Target>
+  
+</Project>
