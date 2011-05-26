@@ -112,18 +112,18 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="COMPONENTNAME" xml:space="preserve">
+  <data name="COMPONENTNAME.CharacterTranscoder" xml:space="preserve">
     <value>CharacterTranscoder</value>
   </data>
-  <data name="COMPONENTDESCRIPTION" xml:space="preserve">
+  <data name="COMPONENTDESCRIPTION.CharacterTranscoder" xml:space="preserve">
     <value>Transcodes the stream from a source to a target encoding</value>
   </data>
-  <data name="COMPONENTVERSION" xml:space="preserve">
+  <data name="COMPONENTVERSION.CharacterTranscoder" xml:space="preserve">
     <value>1.0</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
@@ -200,5 +200,14 @@
         /wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP//
         /wD///8A////AA==
 </value>
+  </data>
+  <data name="COMPONENTDESCRIPTION.ToWindowsNewLines" xml:space="preserve">
+    <value>Converts Unix style newlines and fixes incomplete Windows style newlines</value>
+  </data>
+  <data name="COMPONENTNAME.ToWindowsNewLines" xml:space="preserve">
+    <value>ToWindowsNewLines</value>
+  </data>
+  <data name="COMPONENTVERSION.ToWindowsNewLines" xml:space="preserve">
+    <value>1.0</value>
   </data>
 </root>

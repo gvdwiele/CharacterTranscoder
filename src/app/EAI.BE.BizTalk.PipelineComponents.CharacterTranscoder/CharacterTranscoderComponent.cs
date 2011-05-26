@@ -70,7 +70,7 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return resourceManager.GetString("COMPONENTNAME", System.Globalization.CultureInfo.InvariantCulture);
+                return resourceManager.GetString("COMPONENTNAME.CharacterTranscoder", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         
@@ -82,7 +82,7 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return resourceManager.GetString("COMPONENTVERSION", System.Globalization.CultureInfo.InvariantCulture);
+                return resourceManager.GetString("COMPONENTVERSION.CharacterTranscoder", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         
@@ -94,7 +94,7 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return resourceManager.GetString("COMPONENTDESCRIPTION", System.Globalization.CultureInfo.InvariantCulture);
+                return resourceManager.GetString("COMPONENTDESCRIPTION.CharacterTranscoder", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         #endregion

@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterTranscoderComponent.cs" />
+    <Compile Include="ToWindowsNewLinesComponent.cs" />
     <Compile Include="Design\EncodingListControl.cs">
       <SubType>Component</SubType>
     </Compile>
