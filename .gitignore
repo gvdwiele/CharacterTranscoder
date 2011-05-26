@@ -8,7 +8,6 @@ obj
 *.user
 *.suo
 *.sln.cache
-*.dll
 *.pdb
 *.msi
 *.resharper
