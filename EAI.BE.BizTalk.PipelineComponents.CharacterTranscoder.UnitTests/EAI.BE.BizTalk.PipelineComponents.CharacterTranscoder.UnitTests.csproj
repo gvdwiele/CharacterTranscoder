@@ -40,6 +40,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\Microsoft.BizTalk.Pipeline.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.BizTalk.Streaming, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft BizTalk Server 2010\Microsoft.BizTalk.Streaming.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
@@ -48,20 +52,38 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\Microsoft.XLANGs.BaseTypes.dll</HintPath>
     </Reference>
+    <Reference Include="PipelineObjects, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\PublicAssemblies\PipelineObjects.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Winterdom.BizTalk.PipelineTesting">
+      <HintPath>..\lib\Winterdom.BizTalk.PipelineTesting.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterTranscoderTests.cs" />
+    <Compile Include="DocLoader.cs" />
     <Compile Include="WindowsNewLineStreamTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.TestArtifacts\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.TestArtifacts.btproj">
+      <Project>{FEB20810-DDE8-47EA-8A0C-5B4393B066D6}</Project>
+      <Name>EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.TestArtifacts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder\EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.csproj">
       <Project>{4B7CC2E7-0AF8-465B-9069-8EAFEC604255}</Project>
       <Name>EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="samples\ok.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="samples\nok.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -5,6 +5,10 @@ using System.IO;
 using EAI.BE.BizTalk.PipelineComponents;
 using Microsoft.BizTalk.Message.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Winterdom.BizTalk.PipelineTesting;
+using EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.TestArtifacts;
+using WinterdomTesting = Winterdom.BizTalk.PipelineTesting;
+using Microsoft.BizTalk.Streaming;
 
 namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
 {
@@ -92,6 +96,7 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { 0, 0, 0 }));
         }
 
+        
         [TestMethod]
         public void InsertLFWhenMissing()
         {
@@ -173,6 +178,44 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
             count = after.Read(output, 0, 4);
             Assert.AreEqual<int>(4, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF, WindowsNewLineStream.CR, WindowsNewLineStream.LF }));
+        }
+
+        [TestMethod]
+        public void IntegrationTestExecutingAndParsingFromPipeline()
+        {
+            //Microsoft.BizTalk.ParsingEngine.AbortException
+            Stream input = DocLoader.LoadStream("samples.ok.txt");
+            IBaseMessage msg = MessageHelper.CreateFromStream(input);
+            ReceivePipelineWrapper pipeline;
+            pipeline = WinterdomTesting.PipelineFactory.CreateReceivePipeline(typeof(ReceivePipelineToWindowsNewLineFF));
+            pipeline.AddDocSpec(typeof(FlatFileManifest));
+            WinterdomTesting.MessageCollection col = pipeline.Execute(msg);
+            Assert.AreEqual(1, col.Count);
+        }
+
+        [TestMethod, ExpectedException(typeof(System.Xml.XmlException))]
+        public void IntegrationTestExecutingAndParsingFromPipelineFailure()
+        {
+            //Microsoft.BizTalk.ParsingEngine.AbortException
+            Stream input = DocLoader.LoadStream("samples.nok.txt");
+            IBaseMessage msg = MessageHelper.CreateFromStream(input);
+            ReceivePipelineWrapper pipeline;
+            pipeline = WinterdomTesting.PipelineFactory.CreateReceivePipeline(typeof(ReceivePipelineToWindowsNewLineFF));
+            pipeline.AddDocSpec(typeof(FlatFileManifest));
+            WinterdomTesting.MessageCollection col = pipeline.Execute(msg);
+            Assert.AreEqual(1, col.Count);
+        }
+
+        [TestMethod]
+        public void IntegrationTestExecutingFromPipeline()
+        {
+            Stream input = DocLoader.LoadStream("samples.ok.txt");
+            IBaseMessage msg = MessageHelper.CreateFromStream(input);
+            ReceivePipelineWrapper pipeline;
+            pipeline = WinterdomTesting.PipelineFactory.CreateReceivePipeline(typeof(ReceivePipelineToWindowsNewLine));
+            pipeline.AddDocSpec(typeof(FlatFileManifest));
+            WinterdomTesting.MessageCollection col = pipeline.Execute(msg);
+            Assert.AreEqual(1, col.Count);
         }
 
         static bool ByteArrayCompare(byte[] a1, byte[] a2)
