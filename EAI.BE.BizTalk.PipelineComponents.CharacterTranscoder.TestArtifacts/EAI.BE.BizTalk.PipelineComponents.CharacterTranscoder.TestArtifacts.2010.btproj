@@ -137,6 +137,12 @@
       <Name>EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.2010</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Pipeline Include="ReceivePipelineCleanEdifact.btp">
+      <TypeName>ReceivePipelineCleanEdifact</TypeName>
+      <Namespace>EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.TestArtifacts</Namespace>
+    </Pipeline>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\BizTalk\BizTalkC.targets" />
 </Project>
