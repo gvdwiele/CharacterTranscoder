@@ -126,7 +126,7 @@
   <data name="COMPONENTVERSION.CharacterTranscoder" xml:space="preserve">
     <value>1.0</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="COMPONENTICON" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         Qk02EAAAAAAAADYAAAAoAAAAIAAAACAAAAABACAAAAAAAAAAAADEDgAAxA4AAAAAAAAAAAAA////AP//
@@ -208,6 +208,15 @@
     <value>ToWindowsNewLines</value>
   </data>
   <data name="COMPONENTVERSION.ToWindowsNewLines" xml:space="preserve">
+    <value>1.0</value>
+  </data>
+  <data name="COMPONENTDESCRIPTION.EdifactCleaner" xml:space="preserve">
+    <value>Removes newlines and optionally overrides UNO character set.</value>
+  </data>
+  <data name="COMPONENTNAME.EdifactCleaner" xml:space="preserve">
+    <value>CleanEdifactComponent</value>
+  </data>
+  <data name="COMPONENTVERSION.EdifactCleaner" xml:space="preserve">
     <value>1.0</value>
   </data>
 </root>
