@@ -211,12 +211,21 @@
     <value>1.0</value>
   </data>
   <data name="COMPONENTDESCRIPTION.EdifactCleaner" xml:space="preserve">
-    <value>Removes newlines and optionally overrides UNO character set.</value>
+    <value>Removes newlines and normalizes to EDIFACT syntax.</value>
   </data>
   <data name="COMPONENTNAME.EdifactCleaner" xml:space="preserve">
-    <value>CleanEdifactComponent</value>
+    <value>Edifact Cleaner</value>
   </data>
   <data name="COMPONENTVERSION.EdifactCleaner" xml:space="preserve">
+    <value>1.0</value>
+  </data>
+  <data name="COMPONENTDESCRIPTION.EdifactXmlCleaner" xml:space="preserve">
+    <value>Normalizes elements to the given EDIFACT syntax.</value>
+  </data>
+  <data name="COMPONENTNAME.EdifactXmlCleaner" xml:space="preserve">
+    <value>Edifact Xml Cleaner</value>
+  </data>
+  <data name="COMPONENTVERSION.EdifactXmlCleaner" xml:space="preserve">
     <value>1.0</value>
   </data>
 </root>

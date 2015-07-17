@@ -467,6 +467,49 @@ XYZ...", result);
 
          }
 
+
+         [TestMethod]
+         public void EdifactXmlCleaner_UNOBRun()
+         {
+             Stream input = DocLoader.LoadStream("samples.edifact1.xml");
+             IBaseMessage msg = MessageHelper.CreateFromStream(input);
+             var cleaner = new EdifactXmlCleaner();
+             cleaner.TargetCharSet = EdifactCharacterSet.UNOB;
+             var result = Winterdom.BizTalk.PipelineTesting.Simple.Pipelines.Send().WithPreAssembler(cleaner).End().Execute(msg);
+             
+             var expected = new String(UTF8.GetChars(StreamToArray(DocLoader.LoadStream("samples.edifact1_cleaned.xml"))));
+             var after = new String(UTF8.GetChars(StreamToArray(result.BodyPart.GetOriginalDataStream())));
+
+             string diff;
+             bool equals = CompareStrings(expected, after, out diff);
+
+             Assert.AreEqual(string.Empty, diff);
+         }
+
+         private static bool CompareStrings(string expected, string after, out string diff)
+         {
+             var expectedChars = expected.ToCharArray();
+             var afterChars = after.ToCharArray();
+
+             var sb = new StringBuilder();
+             for (int i = 0; i < expectedChars.Length; i++)
+             {
+                 if (i > afterChars.GetUpperBound(0))
+                 {
+                     sb.AppendLine("Position " + i + ": expected " + expectedChars[i] + ", is missing");
+                     continue;
+                 }
+                 if (after[i] != expectedChars[i])
+                     sb.AppendLine("Position " + i + ": expected " + expectedChars[i] + ", is " + after[i]);
+             }
+
+             diff = sb.ToString();
+
+             bool equals = (string.Empty == sb.ToString());
+             return equals;
+         }
+
+
          [TestMethod]
          public void EdifactCleaner_OverrideCharSet()
          {

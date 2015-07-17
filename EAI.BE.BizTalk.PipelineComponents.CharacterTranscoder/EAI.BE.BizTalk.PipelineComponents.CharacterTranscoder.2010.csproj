@@ -84,6 +84,7 @@
       <Link>Properties\commonassemblyversioninfo.cs</Link>
     </Compile>
     <Compile Include="CharacterTranscoderComponent.cs" />
+    <Compile Include="EdifactXmlCleaner.cs" />
     <Compile Include="EdifactCleaner.cs" />
     <Compile Include="EdifactWriter.cs" />
     <Compile Include="EdifactExtensions.cs" />

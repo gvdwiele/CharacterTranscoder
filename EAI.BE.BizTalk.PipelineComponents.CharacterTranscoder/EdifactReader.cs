@@ -60,44 +60,11 @@ namespace EAI.BE.BizTalk.PipelineComponents
             if (_removeControlChars && char.IsControl(c))
                 return Peek(); // recurse
 
-            return Clean(c);
+            return c.Translate(_charSet, _fallbackChar);
 
         }
 
-        private char Clean(char ch)
-        {
-            switch (_charSet)
-            {
-                case EdifactCharacterSet.UNOA:
-                    return ch.ToUNOA(_fallbackChar);
-                case EdifactCharacterSet.UNOB:
-                    return ch.ToUNOB(_fallbackChar);
-                case EdifactCharacterSet.UNOC:
-                    return ch.ToUNOC(_fallbackChar);
-                case EdifactCharacterSet.UNOD:
-                    return ch.ToUNOC(_fallbackChar);
-                case EdifactCharacterSet.UNOE:
-                    return ch.ToUNOE(_fallbackChar);
-                case EdifactCharacterSet.UNOF:
-                    return ch.ToUNOF(_fallbackChar);
-                case EdifactCharacterSet.UNOG:
-                    return ch.ToUNOG(_fallbackChar);
-                case EdifactCharacterSet.UNOH:
-                    return ch.ToUNOH(_fallbackChar);
-                case EdifactCharacterSet.UNOI:
-                    return ch.ToUNOI(_fallbackChar);
-                case EdifactCharacterSet.UNOJ:
-                    return ch.ToUNOJ(_fallbackChar);
-                case EdifactCharacterSet.UNOK:
-                    return ch.ToUNOK(_fallbackChar);
-                case EdifactCharacterSet.UNOX:
-                case EdifactCharacterSet.UNOY:
-                case EdifactCharacterSet.KECA:
-                    return ch;
-                default:
-                    return ch;
-            }
-        }
+        
 
         public override int Read()
         {
@@ -110,7 +77,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
             if (_removeControlChars && char.IsControl(c))
                 return Read(); // recurse
 
-            return Clean(c);
+            return c.Translate(_charSet, _fallbackChar);
         }
 
         public override string ReadToEnd()
@@ -142,7 +109,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
             {
                 if (!(_removeControlChars && char.IsControl(c)))
                 {
-                    sb.Append(Clean(c));
+                    sb.Append(c.Translate(_charSet, _fallbackChar));
                 }
             }
 

@@ -222,8 +222,41 @@ namespace EAI.BE.BizTalk.Extensions
             return ch;
         }
 
-        
 
+        public static char Translate(this char ch, EdifactCharacterSet charSet, char fallbackChar)
+        {
+            switch (charSet)
+            {
+                case EdifactCharacterSet.UNOA:
+                    return ch.ToUNOA(fallbackChar);
+                case EdifactCharacterSet.UNOB:
+                    return ch.ToUNOB(fallbackChar);
+                case EdifactCharacterSet.UNOC:
+                    return ch.ToUNOC(fallbackChar);
+                case EdifactCharacterSet.UNOD:
+                    return ch.ToUNOC(fallbackChar);
+                case EdifactCharacterSet.UNOE:
+                    return ch.ToUNOE(fallbackChar);
+                case EdifactCharacterSet.UNOF:
+                    return ch.ToUNOF(fallbackChar);
+                case EdifactCharacterSet.UNOG:
+                    return ch.ToUNOG(fallbackChar);
+                case EdifactCharacterSet.UNOH:
+                    return ch.ToUNOH(fallbackChar);
+                case EdifactCharacterSet.UNOI:
+                    return ch.ToUNOI(fallbackChar);
+                case EdifactCharacterSet.UNOJ:
+                    return ch.ToUNOJ(fallbackChar);
+                case EdifactCharacterSet.UNOK:
+                    return ch.ToUNOK(fallbackChar);
+                case EdifactCharacterSet.UNOX:
+                case EdifactCharacterSet.UNOY:
+                case EdifactCharacterSet.KECA:
+                    return ch;
+                default:
+                    return ch;
+            }
+        }
 
 
     }
