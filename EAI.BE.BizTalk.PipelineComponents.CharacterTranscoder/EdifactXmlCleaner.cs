@@ -250,8 +250,11 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
             var result = new MemoryStream();
 
+            var settings = new XmlWriterSettings();
+            settings.Encoding = Encoding.UTF8;
+
             using (var reader = XmlReader.Create(stream))
-            using (var writer = XmlWriter.Create(result))
+            using (var writer = XmlWriter.Create(result, settings))
             {
                 while (reader.Read())
                 {
@@ -283,7 +286,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
                         case XmlNodeType.XmlDeclaration:
                         case XmlNodeType.ProcessingInstruction:
-                            writer.WriteProcessingInstruction(reader.Name, reader.Value);
+                            //writer.WriteProcessingInstruction(reader.Name, reader.Value);
                             break;
 
                         case XmlNodeType.SignificantWhitespace:
