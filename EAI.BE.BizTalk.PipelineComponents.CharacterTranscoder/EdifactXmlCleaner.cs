@@ -147,6 +147,11 @@ namespace EAI.BE.BizTalk.PipelineComponents
             {
                 this.FallbackChar = ((char)(val));
             }
+            val = ReadPropertyBag(pb, "Separators");
+            if ((val != null))
+            {
+                this.Separators = ((string)(val));
+            }
 
         }
 
@@ -161,6 +166,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
             WritePropertyBag(pb, "TargetCharSet", this.TargetCharSet.ToString());
             WritePropertyBag(pb, "FallbackChar", this.FallbackChar);
+            WritePropertyBag(pb, "Separators", this.Separators);
         }
 
         #region utility functionality
