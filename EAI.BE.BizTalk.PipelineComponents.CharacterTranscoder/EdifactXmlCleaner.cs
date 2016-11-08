@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace EAI.BE.BizTalk.PipelineComponents
 {
     using System;
@@ -48,7 +50,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         }
 
 
-        char _fallbackChar = ' ';
+        private char _fallbackChar = ' ';
 
         [Browsable(true)]
         [DisplayName("Fallback character")]
@@ -57,6 +59,17 @@ namespace EAI.BE.BizTalk.PipelineComponents
             get { return _fallbackChar; }
             set { _fallbackChar = value; }
         }
+
+        private string _separators = "";
+
+        [Browsable(true)]
+        [DisplayName("Separator characters")]
+        public string Separators
+        {
+            get { return _separators; }
+            set { _separators = value; }
+        }
+
 
         #region IBaseComponent members
         /// <summary>
@@ -256,6 +269,8 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
             var settings = new XmlWriterSettings {Encoding = Encoding.UTF8};
 
+            var separators = _separators.ToCharArray();
+            
             using (var reader = XmlReader.Create(stream))
             using (var writer = XmlWriter.Create(result, settings))
             {
@@ -278,8 +293,10 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
                             var sb = new StringBuilder();
                             foreach(var c in value)
-                                sb.Append(c.Translate(targetCharSet,_fallbackChar));
-                            
+                            { 
+                                var translated = c.Translate(targetCharSet,_fallbackChar);
+                                sb.Append(separators.Contains(translated) ? _fallbackChar : translated);
+                            }
                             writer.WriteString(sb.ToString());
                             break;
 

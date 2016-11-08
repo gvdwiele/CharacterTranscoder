@@ -482,6 +482,28 @@ XYZ...", result);
              Assert.AreEqual(string.Empty, diff);
          }
 
+         [TestMethod]
+         public void EdifactXmlCleaner_Separators()
+         {
+             var msg = MessageHelper.CreateFromString("﻿<ROOT>Returns everything except the ! and the ?</ROOT>");
+             var cleaner = new EdifactXmlCleaner { TargetCharSet = EdifactCharacterSet.UNOC , Separators = "?!", FallbackChar = '*'};
+             var result = Winterdom.BizTalk.PipelineTesting.Simple.Pipelines.Send().WithPreAssembler(cleaner).End().Execute(msg);
+
+             const string expected = "<?xml version=\"1.0\" encoding=\"utf-8\"?><ROOT>Returns everything except the * and the *</ROOT>";
+             string after;
+
+             using (var reader = new StreamReader(result.BodyPart.GetOriginalDataStream(), Encoding.UTF8))
+             {
+                 after = reader.ReadToEnd();
+             }
+
+
+             string diff;
+             var equals = CompareStrings(expected, after, out diff);
+
+             Assert.AreEqual(string.Empty, diff);
+         }
+
          private static bool CompareStrings(string expected, string after, out string diff)
          {
              var expectedChars = expected.ToCharArray();
