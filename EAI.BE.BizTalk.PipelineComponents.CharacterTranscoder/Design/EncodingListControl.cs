@@ -32,26 +32,24 @@ namespace Winterdom.BizTalk.Samples.FixEncoding.Design
          BorderStyle = BorderStyle.None;
          IntegralHeight = false;
 
-         List<EncodingInfo> encodingsList = new List<EncodingInfo>();
+         var encodingsList = new List<EncodingInfo>();
          encodingsList.AddRange(Encoding.GetEncodings());
          encodingsList.Sort(new EncodingInfoComparer());
          DisplayMember = "DisplayName";
          ValueMember = "CodePage";
 
-         foreach ( EncodingInfo ei in encodingsList )
+         foreach ( var ei in encodingsList )
          {
             Items.Add(ei);
          }
       }
       public void SetSelectedCodePage(int codepage)
       {
-         for ( int i = 0; i < Items.Count; i++ )
+         for ( var i = 0; i < Items.Count; i++ )
          {
-            if ( ((EncodingInfo)Items[i]).CodePage == codepage )
-            {
-               SelectedIndex = i;
-               break;
-            }
+             if (((EncodingInfo) Items[i]).CodePage != codepage) continue;
+             SelectedIndex = i;
+             break;
          }
       }
 
@@ -61,7 +59,7 @@ namespace Winterdom.BizTalk.Samples.FixEncoding.Design
 
          public int Compare(EncodingInfo x, EncodingInfo y)
          {
-            return x.DisplayName.CompareTo(y.DisplayName);
+            return string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal);
          }
 
          #endregion

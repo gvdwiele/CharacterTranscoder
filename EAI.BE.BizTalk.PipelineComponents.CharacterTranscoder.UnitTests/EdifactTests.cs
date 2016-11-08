@@ -16,27 +16,24 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
     [TestClass]
     public class EdifactTests
     {
-        private static Encoding ISO_8859_1 = Encoding.GetEncoding("ISO-8859-1");
+        private static Encoding _iso88591 = Encoding.GetEncoding("ISO-8859-1");
 
-        private static Encoding UTF8 = new UTF8Encoding();
+        private static readonly Encoding Utf8 = new UTF8Encoding();
 
-        private static Encoding ASCII = new ASCIIEncoding();
-
-
-        private static Encoding Windows1252 = Encoding.GetEncoding(1252);
+        private static Encoding _windows1252 = Encoding.GetEncoding(1252);
 
 
         [TestMethod]
         public void EdifactReader_UNOA_Default()
         {
-            string value = "ABC@@@";
-            byte[] bytes = UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABC@@@";
+            var bytes = Utf8.GetBytes(value);
+            var output = new byte[3];
 
 
             var sb = new StringBuilder();
 
-            using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOA, '.'))
+            using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOA, '.'))
             {
                 int c;
                 while ((c = sr.Read()) != -1)
@@ -55,14 +52,14 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void EdifactReader_UNOA_ToUpper()
         {
-            string value = "ABCabc";
-            byte[] bytes = UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABCabc";
+            var bytes = Utf8.GetBytes(value);
+            var output = new byte[3];
 
 
             var sb = new StringBuilder();
 
-            using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOA, '.'))
+            using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOA, '.'))
             {
                 int c;
                 while ((c = sr.Read()) != -1)
@@ -81,14 +78,14 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void EdifactReader_UNOA_ToUpperSpecial()
         {
-            string value = "ABCábc";
-            byte[] bytes = UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABCábc";
+            var bytes = Utf8.GetBytes(value);
+            var output = new byte[3];
 
 
             var sb = new StringBuilder();
 
-            using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOA, '.'))
+            using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOA, '.'))
             {
                 int c;
                 while ((c = sr.Read()) != -1)
@@ -107,13 +104,13 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void EdifactReader_UNOB_Default()
         {
-            string value = "ABCabc";
-            byte[] bytes = UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABCabc";
+            var bytes = Utf8.GetBytes(value);
+            var output = new byte[3];
 
             var sb = new StringBuilder();
 
-            using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOB, '.', true))
+            using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOB, '.', true))
             {
                 int c;
                 while ((c = sr.Read()) != -1)
@@ -133,13 +130,13 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void EdifactReader_UNOB_Replacement()
         {
-            string value = "ABC{}";
-            byte[] bytes = UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABC{}";
+            var bytes = Utf8.GetBytes(value);
+            var output = new byte[3];
 
             var sb = new StringBuilder();
 
-            using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOB, '.', true))
+            using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOB, '.', true))
             {
                 int c;
                 while ((c = sr.Read()) != -1)
@@ -160,13 +157,13 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void EdifactReader_UNOB_Normalize()
         {
-            string value = "ABCúíó";
-            byte[] bytes = UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABCúíó";
+            var bytes = Utf8.GetBytes(value);
+            var output = new byte[3];
 
             var sb = new StringBuilder();
 
-            using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOB, '.', true))
+            using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOB, '.', true))
             {
                 int c;
                 while ((c = sr.Read()) != -1)
@@ -188,13 +185,13 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void EdifactReader_UNOC_Default()
         {
-            string value = "ABCúíó";
-            byte[] bytes = UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABCúíó";
+            var bytes = Utf8.GetBytes(value);
+            var output = new byte[3];
 
             var sb = new StringBuilder();
 
-            using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOC, '.', true))
+            using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOC, '.', true))
             {
                 int c;
                 while ((c = sr.Read()) != -1)
@@ -218,13 +215,13 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
              //only in UTF8 so not in UNOC
             //Ђ 	CYRILLIC CAPITAL LETTER DJE (U+0402) 	d082
 
-            string value = "ABCЂ";
-            byte[] bytes = UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABCЂ";
+            var bytes = Utf8.GetBytes(value);
+            var output = new byte[3];
 
             var sb = new StringBuilder();
 
-            using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOB, '.', true))
+            using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOB, '.', true))
             {
                 int c;
                 while ((c = sr.Read()) != -1)
@@ -245,13 +242,13 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
          [TestMethod]
          public void EdifactReader_RemoveControlChars()
          {
-             string value = "A\aB\bCDEF\fGHIJKLMON\nPQR\rST\tUV\vWXYZ";
-             byte[] bytes = UTF8.GetBytes(value);
-             byte[] output = new byte[3];
+             const string value = "A\aB\bCDEF\fGHIJKLMON\nPQR\rST\tUV\vWXYZ";
+             var bytes = Utf8.GetBytes(value);
+             var output = new byte[3];
 
              var sb = new StringBuilder();
 
-             using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOB, '.', true, true))
+             using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOB, '.', true, true))
              {
                  int c;
                  while ((c = sr.Read()) != -1)
@@ -271,13 +268,13 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
          [TestMethod]
          public void EdifactReader_DontRemoveControlChars()
          {
-             string value = "A\aB\bCDEF\fGHIJKLMON\nPQR\rST\tUV\vWXYZ";
-             byte[] bytes = UTF8.GetBytes(value);
-             byte[] output = new byte[3];
+             const string value = "A\aB\bCDEF\fGHIJKLMON\nPQR\rST\tUV\vWXYZ";
+             var bytes = Utf8.GetBytes(value);
+             var output = new byte[3];
 
              var sb = new StringBuilder();
 
-             using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOB, '.', true, false))
+             using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOB, '.', true, false))
              {
                  int c;
                  while ((c = sr.Read()) != -1)
@@ -296,14 +293,14 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
          [TestMethod]
          public void EdifactReader_UNOA_ReadLine()
          {
-             string value = "ABC@@@";
-             byte[] bytes = UTF8.GetBytes(value);
-             byte[] output = new byte[3];
+             const string value = "ABC@@@";
+             var bytes = Utf8.GetBytes(value);
+             var output = new byte[3];
 
 
              var sb = new StringBuilder();
 
-             using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOA, '.'))
+             using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOA, '.'))
              {
                  int c;
                  while ((c = sr.Read()) != -1)
@@ -315,7 +312,7 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
 
              var resultRead = sb.ToString();
 
-             var sr2 = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOA, '.');
+             var sr2 = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOA, '.');
              var resultReadLine = sr2.ReadLine();
 
              Assert.AreEqual<string>("ABC...", resultRead);
@@ -327,15 +324,15 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
          [TestMethod]
          public void EdifactReader_UNOA_ReadLine_WithNewLine()
          {
-             string value = @"ABC@@@
+             const string value = @"ABC@@@
 XYZ@@@";
-             byte[] bytes = UTF8.GetBytes(value);
-             byte[] output = new byte[3];
+             var bytes = Utf8.GetBytes(value);
+             var output = new byte[3];
 
 
              var sb = new StringBuilder();
 
-             var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOA, '.');
+             var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOA, '.');
              var result = sr.ReadLine();
 
              Assert.AreEqual<string>("ABC...", result);
@@ -350,16 +347,16 @@ XYZ@@@";
          [TestMethod]
          public void EdifactReader_UNOA_ReadLine_WithEmptyNewLine()
          {
-             string value = @"ABC@@@
+             const string value = @"ABC@@@
 
 XYZ@@@";
-             byte[] bytes = UTF8.GetBytes(value);
-             byte[] output = new byte[3];
+             var bytes = Utf8.GetBytes(value);
+             var output = new byte[3];
 
 
              var sb = new StringBuilder();
 
-             var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOA, '.');
+             var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOA, '.');
              var result = sr.ReadLine();
 
              Assert.AreEqual<string>("ABC...", result);
@@ -377,16 +374,16 @@ XYZ@@@";
          [TestMethod]
          public void EdifactReader_UNOA_ReadToEnd_WithEmptyNewLine()
          {
-             string value = @"ABC@@@
+             const string value = @"ABC@@@
 
 XYZ@@@";
-             byte[] bytes = UTF8.GetBytes(value);
-             byte[] output = new byte[3];
+             var bytes = Utf8.GetBytes(value);
+             var output = new byte[3];
 
 
              var sb = new StringBuilder();
 
-             var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOA, '.');
+             var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOA, '.');
              var result = sr.ReadToEnd();
 
              Assert.AreEqual<string>(@"ABC...
@@ -400,13 +397,13 @@ XYZ...", result);
          [TestMethod]
          public void EdifactReader_Replacement()
          {
-             string value = "ABC{}";
-             byte[] bytes = UTF8.GetBytes(value);
-             byte[] output = new byte[3];
+             const string value = "ABC{}";
+             var bytes = Utf8.GetBytes(value);
+             var output = new byte[3];
 
              var sb = new StringBuilder();
 
-             using (var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOB, '.', true))
+             using (var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOB, '.', true))
              {
                  int c;
                  while ((c = sr.Read()) != -1)
@@ -427,17 +424,17 @@ XYZ...", result);
          [TestMethod]
          public void EdifactReader_ReadCharacterSetFromStream()
          {
-             Stream input = DocLoader.LoadStream("samples.edifact1.txt");
-             var sr = new EdifactReader(input, UTF8, EdifactCharacterSet.UNOA, '.');
+             var input = DocLoader.LoadStream("samples.edifact1.txt");
+             var sr = new EdifactReader(input, Utf8, EdifactCharacterSet.UNOA, '.');
              Assert.AreEqual(sr.CharSet, EdifactCharacterSet.UNOB);
          }
 
          [TestMethod]
          public void EdifactReader_CharacterSetMissingFromStream_Fallback()
          {
-             string value = @"dummy";
-             byte[] bytes = UTF8.GetBytes(value);
-             var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOX, '.');
+             const string value = @"dummy";
+             var bytes = Utf8.GetBytes(value);
+             var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOX, '.');
              Assert.AreEqual(sr.CharSet, EdifactCharacterSet.UNOX);
          }
 
@@ -445,23 +442,23 @@ XYZ...", result);
          [TestMethod]
          public void EdifactReader_ReadCharacterFromShortStream()
          {
-             string value = @"UNOD";
-             byte[] bytes = UTF8.GetBytes(value);
-             var sr = new EdifactReader(new MemoryStream(bytes), UTF8, EdifactCharacterSet.UNOX, '.');
+             const string value = @"UNOD";
+             var bytes = Utf8.GetBytes(value);
+             var sr = new EdifactReader(new MemoryStream(bytes), Utf8, EdifactCharacterSet.UNOX, '.');
              Assert.AreEqual(sr.CharSet, EdifactCharacterSet.UNOD);
          }
 
          [TestMethod]
          public void EdifactCleaner_DefaultRun()
          {
-             Stream input = DocLoader.LoadStream("samples.edifact1.txt");
-             IBaseMessage msg = MessageHelper.CreateFromStream(input);
+             var input = DocLoader.LoadStream("samples.edifact1.txt");
+             var msg = MessageHelper.CreateFromStream(input);
              var cleaner = new EdifactCleaner();
              var result = Winterdom.BizTalk.PipelineTesting.Simple.Pipelines.Receive().WithDecoder(cleaner).End().Execute(msg); 
              Assert.AreEqual(1, result.Count);
 
-             var expected = new String(UTF8.GetChars(StreamToArray(DocLoader.LoadStream("samples.edifact1.txt"))));
-             var after = new String(UTF8.GetChars(StreamToArray(result[0].BodyPart.GetOriginalDataStream())));
+             var expected = new string(Utf8.GetChars(StreamToArray(DocLoader.LoadStream("samples.edifact1.txt"))));
+             var after = new string(Utf8.GetChars(StreamToArray(result[0].BodyPart.GetOriginalDataStream())));
 
              Assert.AreEqual(expected, after);
 
@@ -471,17 +468,16 @@ XYZ...", result);
          [TestMethod]
          public void EdifactXmlCleaner_UNOBRun()
          {
-             Stream input = DocLoader.LoadStream("samples.edifact1.xml");
-             IBaseMessage msg = MessageHelper.CreateFromStream(input);
-             var cleaner = new EdifactXmlCleaner();
-             cleaner.TargetCharSet = EdifactCharacterSet.UNOB;
+             var input = DocLoader.LoadStream("samples.edifact1.xml");
+             var msg = MessageHelper.CreateFromStream(input);
+             var cleaner = new EdifactXmlCleaner {TargetCharSet = EdifactCharacterSet.UNOB};
              var result = Winterdom.BizTalk.PipelineTesting.Simple.Pipelines.Send().WithPreAssembler(cleaner).End().Execute(msg);
              
-             var expected = new String(UTF8.GetChars(StreamToArray(DocLoader.LoadStream("samples.edifact1_cleaned.xml"))));
-             var after = new String(UTF8.GetChars(StreamToArray(result.BodyPart.GetOriginalDataStream())));
+             var expected = new string(Utf8.GetChars(StreamToArray(DocLoader.LoadStream("samples.edifact1_cleaned.xml"))));
+             var after = new string(Utf8.GetChars(StreamToArray(result.BodyPart.GetOriginalDataStream())));
 
              string diff;
-             bool equals = CompareStrings(expected, after, out diff);
+             var equals = CompareStrings(expected, after, out diff);
 
              Assert.AreEqual(string.Empty, diff);
          }
@@ -492,7 +488,7 @@ XYZ...", result);
              var afterChars = after.ToCharArray();
 
              var sb = new StringBuilder();
-             for (int i = 0; i < expectedChars.Length; i++)
+             for (var i = 0; i < expectedChars.Length; i++)
              {
                  if (i > afterChars.GetUpperBound(0))
                  {
@@ -505,7 +501,7 @@ XYZ...", result);
 
              diff = sb.ToString();
 
-             bool equals = (string.Empty == sb.ToString());
+             var equals = (string.Empty == sb.ToString());
              return equals;
          }
 
@@ -513,16 +509,18 @@ XYZ...", result);
          [TestMethod]
          public void EdifactCleaner_OverrideCharSet()
          {
-             Stream input = DocLoader.LoadStream("samples.edifact1.txt");
-             IBaseMessage msg = MessageHelper.CreateFromStream(input);
-             var cleaner = new EdifactCleaner();
-             cleaner.OverrideCharSet = true;
-             cleaner.TargetCharSet = EdifactCharacterSet.UNOC;
+             var input = DocLoader.LoadStream("samples.edifact1.txt");
+             var msg = MessageHelper.CreateFromStream(input);
+             var cleaner = new EdifactCleaner
+             {
+                 OverrideCharSet = true,
+                 TargetCharSet = EdifactCharacterSet.UNOC
+             };
              var result = Winterdom.BizTalk.PipelineTesting.Simple.Pipelines.Receive().WithDecoder(cleaner).End().Execute(msg);
              Assert.AreEqual(1, result.Count);
 
-             var expected = "UNOC";
-             var after = new String(UTF8.GetChars(StreamToArray(result[0].BodyPart.GetOriginalDataStream())));
+             const string expected = "UNOC";
+             var after = new string(Utf8.GetChars(StreamToArray(result[0].BodyPart.GetOriginalDataStream())));
 
              Assert.AreEqual(expected, after.Substring(5,4));
 
@@ -531,15 +529,14 @@ XYZ...", result);
          [TestMethod]
          public void EdifactCleaner_RemoveControlChars()
          {
-             Stream input = DocLoader.LoadStream("samples.edifact1_with_control_chars.txt");
-             IBaseMessage msg = MessageHelper.CreateFromStream(input);
-             var cleaner = new EdifactCleaner();
-             cleaner.RemoveControlChars = true;
+             var input = DocLoader.LoadStream("samples.edifact1_with_control_chars.txt");
+             var msg = MessageHelper.CreateFromStream(input);
+             var cleaner = new EdifactCleaner {RemoveControlChars = true};
              var result = Winterdom.BizTalk.PipelineTesting.Simple.Pipelines.Receive().WithDecoder(cleaner).End().Execute(msg);
              Assert.AreEqual(1, result.Count);
 
-             var expected = new String(UTF8.GetChars(StreamToArray(DocLoader.LoadStream("samples.edifact1.txt"))));
-             var after = new String(UTF8.GetChars(StreamToArray(result[0].BodyPart.GetOriginalDataStream())));
+             var expected = new string(Utf8.GetChars(StreamToArray(DocLoader.LoadStream("samples.edifact1.txt"))));
+             var after = new string(Utf8.GetChars(StreamToArray(result[0].BodyPart.GetOriginalDataStream())));
 
              Assert.AreEqual(expected, after);
 
@@ -548,38 +545,28 @@ XYZ...", result);
          [TestMethod]
          public void EdifactCleaner_DoesntRemoveControlChars()
          {
-             Stream input = DocLoader.LoadStream("samples.edifact1_with_control_chars.txt");
-             IBaseMessage msg = MessageHelper.CreateFromStream(input);
+             var input = DocLoader.LoadStream("samples.edifact1_with_control_chars.txt");
+             var msg = MessageHelper.CreateFromStream(input);
              var cleaner = new EdifactCleaner();
              var result = Winterdom.BizTalk.PipelineTesting.Simple.Pipelines.Receive().WithDecoder(cleaner).End().Execute(msg);
              Assert.AreEqual(1, result.Count);
 
-             var expected = new String(UTF8.GetChars(StreamToArray(DocLoader.LoadStream("samples.edifact1_with_control_chars.txt"))));
-             var after = new String(UTF8.GetChars(StreamToArray(result[0].BodyPart.GetOriginalDataStream())));
+             var expected = new string(Utf8.GetChars(StreamToArray(DocLoader.LoadStream("samples.edifact1_with_control_chars.txt"))));
+             var after = new string(Utf8.GetChars(StreamToArray(result[0].BodyPart.GetOriginalDataStream())));
 
              Assert.AreEqual(expected, after);
 
          }
-         
-        static bool ByteArrayCompare(byte[] a1, byte[] a2)
-        {
-            if (a1.Length != a2.Length)
-                return false;
-            for (int i = 0; i < a1.Length; i++)
-                if (a1[i] != a2[i])
-                    return false;
-            return true;
-        }
 
         public static MemoryStream Fix3F(Stream source)
         {
-            MemoryStream target = new MemoryStream();
-            Encoding targetEncoding = Encoding.GetEncoding(1252);
+            var target = new MemoryStream();
+            var targetEncoding = Encoding.GetEncoding(1252);
 
-            StreamReader sourceReader = new StreamReader(source, Encoding.UTF8, false);
-            StreamWriter targetWriter = new StreamWriter(target, targetEncoding);
+            var sourceReader = new StreamReader(source, Encoding.UTF8, false);
+            var targetWriter = new StreamWriter(target, targetEncoding);
 
-            int charRead = sourceReader.Read();
+            var charRead = sourceReader.Read();
             while (charRead != -1)
             {
                 targetWriter.Write((char)charRead);
@@ -592,14 +579,14 @@ XYZ...", result);
 
         private static byte[] StreamToArray(Stream bytes)
         {
-            int read = bytes.ReadByte();
-            List<byte> listOfBytes = new List<byte>();
+            var read = bytes.ReadByte();
+            var listOfBytes = new List<byte>();
             while (read != -1)
             {
                 listOfBytes.Add((byte)read);
                 read = bytes.ReadByte();
             }
-            byte[] output = listOfBytes.ToArray();
+            var output = listOfBytes.ToArray();
             
             return output;
         }

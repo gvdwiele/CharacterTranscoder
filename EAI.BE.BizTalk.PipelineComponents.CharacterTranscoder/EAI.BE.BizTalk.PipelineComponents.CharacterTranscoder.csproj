@@ -89,6 +89,7 @@
     <Compile Include="EdifactExtensions.cs" />
     <Compile Include="EdifactCharacterSet.cs" />
     <Compile Include="EdifactReader.cs" />
+    <Compile Include="EdifactXmlCleaner.cs" />
     <Compile Include="ToWindowsNewLinesComponent.cs" />
     <Compile Include="Design\EncodingListControl.cs">
       <SubType>Component</SubType>

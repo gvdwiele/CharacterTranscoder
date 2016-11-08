@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace EAI.BE.BizTalk.PipelineComponents
 {
     using System;
@@ -24,14 +26,13 @@ using Microsoft.XLANGs.BaseTypes;
     [ComponentCategory(CategoryTypes.CATID_Any)]
     public class CharacterTranscoderComponent : Microsoft.BizTalk.Component.Interop.IComponent, IBaseComponent, IPersistPropertyBag, IComponentUI
     {
-        private System.Resources.ResourceManager resourceManager = new System.Resources.ResourceManager("EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder", Assembly.GetExecutingAssembly());
+        private readonly System.Resources.ResourceManager _resourceManager = new System.Resources.ResourceManager("EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder", Assembly.GetExecutingAssembly());
 
-        private static PropertyBase EncodingInProperty = new TRANSCODER.EncodingIn();
-        private static PropertyBase EncodingOutProperty = new TRANSCODER.EncodingOut();
-        private static readonly Dictionary<int, string> _encodingList;
+        private static readonly PropertyBase EncodingInProperty = new TRANSCODER.EncodingIn();
+        private static readonly PropertyBase EncodingOutProperty = new TRANSCODER.EncodingOut();
 
-        private Encoding _EncodingOut = Encoding.UTF8;
-        private Encoding _EncodingIn = Encoding.UTF8;
+        private Encoding _encodingOut = Encoding.UTF8;
+        private Encoding _encodingIn = Encoding.UTF8;
         
         [Editor(typeof(EncodingTypeEditor), typeof(System.Drawing.Design.UITypeEditor))]
         [TypeConverter(typeof(EncodingTypeConverter))]
@@ -39,11 +40,11 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return _EncodingOut;
+                return _encodingOut;
             }
             set
             {
-                _EncodingOut = value;
+                _encodingOut = value;
             }
         }
 
@@ -53,11 +54,11 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return _EncodingIn;
+                return _encodingIn;
             }
             set
             {
-                _EncodingIn = value;
+                _encodingIn = value;
             }
         }
         
@@ -70,7 +71,7 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return resourceManager.GetString("COMPONENTNAME.CharacterTranscoder", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTNAME.CharacterTranscoder", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         
@@ -82,7 +83,7 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return resourceManager.GetString("COMPONENTVERSION.CharacterTranscoder", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTVERSION.CharacterTranscoder", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         
@@ -94,7 +95,7 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return resourceManager.GetString("COMPONENTDESCRIPTION.CharacterTranscoder", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTDESCRIPTION.CharacterTranscoder", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         #endregion
@@ -102,12 +103,7 @@ using Microsoft.XLANGs.BaseTypes;
 
         static CharacterTranscoderComponent()
         {
-            EncodingInfo[] encodings = Encoding.GetEncodings();
-            _encodingList = new Dictionary<int, string>();
-            foreach (EncodingInfo ei in encodings)
-            {
-                _encodingList.Add(ei.CodePage, ei.Name);
-            }
+            //var encodingList = Encoding.GetEncodings().ToDictionary(ei => ei.CodePage, ei => ei.Name);
         }
 
 
@@ -138,15 +134,15 @@ using Microsoft.XLANGs.BaseTypes;
         public virtual void Load(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, int errlog)
         {
             object val = null;
-            val = this.ReadPropertyBag(pb, "EncodingOut");
+            val = ReadPropertyBag(pb, "EncodingOut");
             if ((val != null))
             {
-                this._EncodingOut = Encoding.GetEncoding((int)(val));
+                this._encodingOut = Encoding.GetEncoding((int)(val));
             }
-            val = this.ReadPropertyBag(pb, "EncodingIn");
+            val = ReadPropertyBag(pb, "EncodingIn");
             if ((val != null))
             {
-                this._EncodingIn = Encoding.GetEncoding((int)(val));
+                this._encodingIn = Encoding.GetEncoding((int)(val));
             }
         }
         
@@ -158,8 +154,8 @@ using Microsoft.XLANGs.BaseTypes;
         /// <param name="fSaveAllProperties">not used</param>
         public virtual void Save(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, bool fClearDirty, bool fSaveAllProperties)
         {
-            this.WritePropertyBag(pb, "EncodingOut", this.EncodingOut.CodePage);
-            this.WritePropertyBag(pb, "EncodingIn", this.EncodingIn.CodePage);
+            WritePropertyBag(pb, "EncodingOut", this.EncodingOut.CodePage);
+            WritePropertyBag(pb, "EncodingIn", this.EncodingIn.CodePage);
         }
         
         #region utility functionality
@@ -169,7 +165,7 @@ using Microsoft.XLANGs.BaseTypes;
         /// <param name="pb">Property bag</param>
         /// <param name="propName">Name of property</param>
         /// <returns>Value of the property</returns>
-        private object ReadPropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName)
+        private static object ReadPropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName)
         {
             object val = null;
             try
@@ -193,7 +189,7 @@ using Microsoft.XLANGs.BaseTypes;
         /// <param name="pb">Property bag.</param>
         /// <param name="propName">Name of property.</param>
         /// <param name="val">Value of property.</param>
-        private void WritePropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName, object val)
+        private static void WritePropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName, object val)
         {
             try
             {
@@ -216,7 +212,11 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return ((System.Drawing.Bitmap)(this.resourceManager.GetObject("COMPONENTICON", System.Globalization.CultureInfo.InvariantCulture))).GetHicon();
+                var bitmap = (System.Drawing.Bitmap)(this._resourceManager.GetObject("COMPONENTICON", System.Globalization.CultureInfo.InvariantCulture));
+                return bitmap !=
+                       null ? bitmap.GetHicon() : IntPtr.Zero;
+
+                ;
             }
         }
         
@@ -249,11 +249,10 @@ using Microsoft.XLANGs.BaseTypes;
         /// </remarks>
         public Microsoft.BizTalk.Message.Interop.IBaseMessage Execute(Microsoft.BizTalk.Component.Interop.IPipelineContext pc, Microsoft.BizTalk.Message.Interop.IBaseMessage inmsg)
         {
-            Encoding encodingIn = this._EncodingIn;
-            Encoding encodingOut = this._EncodingOut;
+            var encodingIn = this._encodingIn;
+            var encodingOut = this._encodingOut;
 
-            object val;
-            val = (object)inmsg.Context.Read(EncodingInProperty.Name.Name, EncodingInProperty.Name.Namespace);
+            var val = (object)inmsg.Context.Read(EncodingInProperty.Name.Name, EncodingInProperty.Name.Namespace);
             if ((val != null))
             {
                 encodingIn = Encoding.GetEncoding((string)val);

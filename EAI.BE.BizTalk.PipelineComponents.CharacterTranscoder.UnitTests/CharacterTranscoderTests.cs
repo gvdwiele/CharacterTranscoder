@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Linq;
 using EAI.BE.BizTalk.PipelineComponents;
 using Microsoft.BizTalk.Message.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -15,11 +16,11 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void MultiByteCharactersInSourceStreamDoNotGetLostStreaming()
         {
-            string value = "Øþ";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
-            byte[] expected = new byte[] { 0xD8, 0xFE };
+            const string value = "Øþ";
+            var bytesUtf8 = Encoding.UTF8.GetBytes(value);
+            var expected = new byte[] { 0xD8, 0xFE };
 
-            Stream after = new TranscodingStream(new MemoryStream(bytesUTF8), Encoding.GetEncoding(1252), Encoding.UTF8);
+            Stream after = new TranscodingStream(new MemoryStream(bytesUtf8), Encoding.GetEncoding(1252), Encoding.UTF8);
 
 
             Assert.IsTrue(ByteArrayCompare(StreamToArray(after), expected));
@@ -28,14 +29,14 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void EmptyWrite()
         {
-            string value = "";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
-            byte[] expected = new byte[] { 0x41};
-            byte[] output = new byte[9];
+            const string value = "";
+            var  bytesUtf8 = Encoding.UTF8.GetBytes(value);
+            var  expected = new byte[] { 0x41};
+            var  output = new byte[9];
 
-            Stream after = new TranscodingStream(new MemoryStream(bytesUTF8), Encoding.GetEncoding(1252), Encoding.UTF8);
+            Stream after = new TranscodingStream(new MemoryStream(bytesUtf8), Encoding.GetEncoding(1252), Encoding.UTF8);
 
-            int count = after.Read(output, 0, 1);
+            var count = after.Read(output, 0, 1);
 
             Assert.AreEqual(0, after.Read(output, 0, 1));
         }
@@ -43,15 +44,15 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void SourceStreamIsShorterThanDestinationStream()
         {
-            string value = "A";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
-            byte[] expected = new byte[100]; 
+            const string value = "A";
+            var  bytesUtf8 = Encoding.UTF8.GetBytes(value);
+            var  expected = new byte[100]; 
             expected[0] = 0x41;
-            byte[] output = new byte[100];
+            var  output = new byte[100];
 
-            Stream after = new TranscodingStream(new MemoryStream(bytesUTF8), Encoding.GetEncoding(1252), Encoding.UTF8);
+            Stream after = new TranscodingStream(new MemoryStream(bytesUtf8), Encoding.GetEncoding(1252), Encoding.UTF8);
 
-            int count = after.Read(output, 0, 100);
+            var count = after.Read(output, 0, 100);
 
             Assert.IsTrue(ByteArrayCompare(output, expected));
         }
@@ -59,14 +60,14 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void NoFullRead()
         {
-            string value = "AAA";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
-            byte[] expected = new byte[] { 0x41, 0x41};
-            byte[] output = new byte[2];
+            const string value = "AAA";
+            var  bytesUtf8 = Encoding.UTF8.GetBytes(value);
+            var  expected = new byte[] { 0x41, 0x41};
+            var  output = new byte[2];
 
-            Stream after = new TranscodingStream(new MemoryStream(bytesUTF8), Encoding.UTF8, Encoding.UTF8);
+            Stream after = new TranscodingStream(new MemoryStream(bytesUtf8), Encoding.UTF8, Encoding.UTF8);
 
-            int count = after.Read(output, 0, 2);
+            var count = after.Read(output, 0, 2);
 
             Assert.IsTrue(ByteArrayCompare(output, expected));
         }
@@ -74,14 +75,14 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void NoFullRead2()
         {
-            string value = "BAA";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
-            byte[] expected = new byte[] { 0x00, 0x42 };
-            byte[] output = new byte[2];
+            const string value = "BAA";
+            var  bytesUtf8 = Encoding.UTF8.GetBytes(value);
+            var  expected = new byte[] { 0x00, 0x42 };
+            var  output = new byte[2];
 
-            Stream after = new TranscodingStream(new MemoryStream(bytesUTF8), Encoding.UTF8, Encoding.UTF8);
+            Stream after = new TranscodingStream(new MemoryStream(bytesUtf8), Encoding.UTF8, Encoding.UTF8);
 
-            int count = after.Read(output, 1, 1);
+            var count = after.Read(output, 1, 1);
 
             Assert.IsTrue(ByteArrayCompare(output, expected));
         }
@@ -89,10 +90,10 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod, ExpectedException(typeof(ObjectDisposedException))]
         public void IdisposableTest()
         {
-            string value = "BAA";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
+            const string value = "BAA";
+            var  bytesUtf8 = Encoding.UTF8.GetBytes(value);
 
-            Stream inStream = new MemoryStream(bytesUTF8);
+            Stream inStream = new MemoryStream(bytesUtf8);
 
 
             using (Stream after = new TranscodingStream(inStream, Encoding.UTF8, Encoding.UTF8))
@@ -101,32 +102,32 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
                 { }
             }
 
-            long length = inStream.Length;
+            var length = inStream.Length;
         }
 
         [TestMethod, ExpectedException(typeof(ObjectDisposedException))]
         public void IdisposableTest2()
         {
-            string value = "BAA";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
+            const string value = "BAA";
+            var  bytesUtf8 = Encoding.UTF8.GetBytes(value);
 
-            Stream inStream = new MemoryStream(bytesUTF8);
+            Stream inStream = new MemoryStream(bytesUtf8);
 
             Stream after = new TranscodingStream(inStream, Encoding.UTF8, Encoding.UTF8);
             after.Close();
 
-            long length = inStream.Length;
+            var length = inStream.Length;
         }
 
         [TestMethod]
         public void Decode_UTF32_And_Encode_1252()
         {
-            string value = "AØþ";
-            byte[] bytesUTF32 = Encoding.UTF32.GetBytes(value);
-            byte[] bytes1252 = Encoding.GetEncoding(1252).GetBytes(value);
-            byte[] output = new byte[bytes1252.Length];
+            const string value = "AØþ";
+            var  bytesUtf32 = Encoding.UTF32.GetBytes(value);
+            var  bytes1252 = Encoding.GetEncoding(1252).GetBytes(value);
+            var  output = new byte[bytes1252.Length];
 
-            Stream after = new TranscodingStream(new MemoryStream(bytesUTF32), Encoding.GetEncoding(1252), Encoding.UTF32);
+            Stream after = new TranscodingStream(new MemoryStream(bytesUtf32), Encoding.GetEncoding(1252), Encoding.UTF32);
 
             Assert.IsTrue(ByteArrayCompare(StreamToArray(after), bytes1252));
         }
@@ -134,76 +135,73 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void Decode_1252_And_Encode_UTF32()
         {
-            string value = "AØþ";
-            byte[] bytesUTF32 = Encoding.UTF32.GetBytes(value);
-            byte[] bytes1252 = Encoding.GetEncoding(1252).GetBytes(value);
-            byte[] output = new byte[bytesUTF32.Length];
+            const string value = "AØþ";
+            var  bytesUtf32 = Encoding.UTF32.GetBytes(value);
+            var  bytes1252 = Encoding.GetEncoding(1252).GetBytes(value);
+            var  output = new byte[bytesUtf32.Length];
 
             Stream after = new TranscodingStream(new MemoryStream(bytes1252), Encoding.UTF32, Encoding.GetEncoding(1252));
 
-            Assert.IsTrue(ByteArrayCompare(StreamToArray(after), bytesUTF32));
+            Assert.IsTrue(ByteArrayCompare(StreamToArray(after), bytesUtf32));
         }
 
 
         [TestMethod]
         public void Decode_UTF8_And_Encode_UTF16()
         {
-            string value = "ABCDEFGHØþ";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
-            byte[] bytesUTF16 = Encoding.Unicode.GetBytes(value);
-            byte[] output = new byte[bytesUTF16.Length];
+            const string value = "ABCDEFGHØþ";
+            var  bytesUtf8 = Encoding.UTF8.GetBytes(value);
+            var  bytesUtf16 = Encoding.Unicode.GetBytes(value);
+            var  output = new byte[bytesUtf16.Length];
 
-            Stream after = new TranscodingStream(new MemoryStream(bytesUTF8), Encoding.Unicode, Encoding.UTF8);
-            int count = after.Read(output, 0, 40);
+            Stream after = new TranscodingStream(new MemoryStream(bytesUtf8), Encoding.Unicode, Encoding.UTF8);
+            var count = after.Read(output, 0, 40);
 
-            Assert.IsTrue(ByteArrayCompare(output, bytesUTF16));
+            Assert.IsTrue(ByteArrayCompare(output, bytesUtf16));
         }
 
         [TestMethod]
         public void Decode_And_Encode_Same_Encoding_UTF16()
         {
-            string value = "ABCDEFGHØþ";
-            byte[] bytesUTF16 = Encoding.Unicode.GetBytes(value);
-            byte[] output = new byte[bytesUTF16.Length];
+            const string value = "ABCDEFGHØþ";
+            var  bytesUtf16 = Encoding.Unicode.GetBytes(value);
+            var  output = new byte[bytesUtf16.Length];
 
-            Stream after = new TranscodingStream(new MemoryStream(bytesUTF16), Encoding.Unicode, Encoding.Unicode);
-            int count = after.Read(output, 0, 40);
+            Stream after = new TranscodingStream(new MemoryStream(bytesUtf16), Encoding.Unicode, Encoding.Unicode);
+            var count = after.Read(output, 0, 40);
 
-            Assert.IsTrue(ByteArrayCompare(output, bytesUTF16));
+            Assert.IsTrue(ByteArrayCompare(output, bytesUtf16));
         }
 
         [TestMethod]
         public void Decode_And_Encode_Same_Encoding_UTF8()
         {
-            string value = "ABCDEFGHØþ";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
-            byte[] output = new byte[bytesUTF8.Length];
+            const string value = "ABCDEFGHØþ";
+            var  bytesUtf8 = Encoding.UTF8.GetBytes(value);
+            var  output = new byte[bytesUtf8.Length];
 
-            Stream after = new TranscodingStream(new MemoryStream(bytesUTF8), Encoding.UTF8, Encoding.UTF8);
-            int count = after.Read(output, 0, 40);
+            Stream after = new TranscodingStream(new MemoryStream(bytesUtf8), Encoding.UTF8, Encoding.UTF8);
+            var count = after.Read(output, 0, 40);
 
-            Assert.IsTrue(ByteArrayCompare(output, bytesUTF8));
+            Assert.IsTrue(ByteArrayCompare(output, bytesUtf8));
         }
 
-        static bool ByteArrayCompare(byte[] a1, byte[] a2)
+        private static bool ByteArrayCompare(byte[] a1, byte[] a2)
         {
             if (a1.Length != a2.Length)
                 return false;
-            for (int i = 0; i < a1.Length; i++)
-                if (a1[i] != a2[i])
-                    return false;
-            return true;
+            return !a1.Where((t, i) => t != a2[i]).Any();
         }
 
         public static MemoryStream Fix3F(Stream source)
         {
-            MemoryStream target = new MemoryStream();
-            Encoding targetEncoding = Encoding.GetEncoding(1252);
+            var target = new MemoryStream();
+            var targetEncoding = Encoding.GetEncoding(1252);
 
-            StreamReader sourceReader = new StreamReader(source, Encoding.UTF8, false);
-            StreamWriter targetWriter = new StreamWriter(target, targetEncoding);
+            var sourceReader = new StreamReader(source, Encoding.UTF8, false);
+            var targetWriter = new StreamWriter(target, targetEncoding);
 
-            int charRead = sourceReader.Read();
+            var charRead = sourceReader.Read();
             while (charRead != -1)
             {
                 targetWriter.Write((char)charRead);
@@ -216,14 +214,14 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
 
         private static byte[] StreamToArray(Stream bytes)
         {
-            int read = bytes.ReadByte();
-            List<byte> listOfBytes = new List<byte>();
+            var read = bytes.ReadByte();
+            var listOfBytes = new List<byte>();
             while (read != -1)
             {
                 listOfBytes.Add((byte)read);
                 read = bytes.ReadByte();
             }
-            byte[] output = listOfBytes.ToArray();
+            var  output = listOfBytes.ToArray();
             
             return output;
         }

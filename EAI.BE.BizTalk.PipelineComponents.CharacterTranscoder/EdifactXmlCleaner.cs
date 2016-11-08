@@ -29,7 +29,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
     [ComponentCategory(CategoryTypes.CATID_Any)]
     public class EdifactXmlCleaner : Microsoft.BizTalk.Component.Interop.IComponent, IBaseComponent, IPersistPropertyBag, IComponentUI
     {
-        private System.Resources.ResourceManager resourceManager = new System.Resources.ResourceManager("EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder", Assembly.GetExecutingAssembly());
+        private readonly System.Resources.ResourceManager _resourceManager = new System.Resources.ResourceManager("EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder", Assembly.GetExecutingAssembly());
 
         private EdifactCharacterSet _targetCharSet = EdifactCharacterSet.UNOC;
 
@@ -67,7 +67,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
             get
             {
-                return resourceManager.GetString("COMPONENTNAME.EdifactXmlCleaner", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTNAME.EdifactXmlCleaner", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -79,7 +79,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
             get
             {
-                return resourceManager.GetString("COMPONENTVERSION.EdifactXmlCleaner", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTVERSION.EdifactXmlCleaner", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -91,7 +91,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
             get
             {
-                return resourceManager.GetString("COMPONENTDESCRIPTION.EdifactXmlCleaner", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTDESCRIPTION.EdifactXmlCleaner", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         #endregion
@@ -146,8 +146,8 @@ namespace EAI.BE.BizTalk.PipelineComponents
         /// <param name="fSaveAllProperties">not used</param>
         public virtual void Save(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, bool fClearDirty, bool fSaveAllProperties)
         {
-            this.WritePropertyBag(pb, "TargetCharSet", this.TargetCharSet.ToString());
-            this.WritePropertyBag(pb, "FallbackChar", this.FallbackChar);
+            WritePropertyBag(pb, "TargetCharSet", this.TargetCharSet.ToString());
+            WritePropertyBag(pb, "FallbackChar", this.FallbackChar);
         }
 
         #region utility functionality
@@ -157,7 +157,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         /// <param name="pb">Property bag</param>
         /// <param name="propName">Name of property</param>
         /// <returns>Value of the property</returns>
-        private object ReadPropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName)
+        private static object ReadPropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName)
         {
             object val = null;
             try
@@ -181,7 +181,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         /// <param name="pb">Property bag.</param>
         /// <param name="propName">Name of property.</param>
         /// <param name="val">Value of property.</param>
-        private void WritePropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName, object val)
+        private static void WritePropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName, object val)
         {
             try
             {
@@ -204,7 +204,11 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
             get
             {
-                return ((System.Drawing.Bitmap)(this.resourceManager.GetObject("COMPONENTICON", System.Globalization.CultureInfo.InvariantCulture))).GetHicon();
+                var bitmap = (System.Drawing.Bitmap)(this._resourceManager.GetObject("COMPONENTICON", System.Globalization.CultureInfo.InvariantCulture));
+                return bitmap !=
+                       null ? bitmap.GetHicon() : IntPtr.Zero;
+
+                ;
             }
         }
 
@@ -241,7 +245,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
             EdifactCharacterSet targetCharSet;
 
-            string syntax = inmsg.Context.Read("UNB1_1", "http://schemas.microsoft.com/BizTalk/2006/edi-properties") as string;
+            var syntax = inmsg.Context.Read("UNB1_1", "http://schemas.microsoft.com/BizTalk/2006/edi-properties") as string;
             
             if (syntax == null || Enum.TryParse<EdifactCharacterSet>(syntax, out targetCharSet)==false)
             {
@@ -250,8 +254,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
             var result = new MemoryStream();
 
-            var settings = new XmlWriterSettings();
-            settings.Encoding = Encoding.UTF8;
+            var settings = new XmlWriterSettings {Encoding = Encoding.UTF8};
 
             using (var reader = XmlReader.Create(stream))
             using (var writer = XmlWriter.Create(result, settings))
@@ -271,10 +274,10 @@ namespace EAI.BE.BizTalk.PipelineComponents
                             break;
 
                         case XmlNodeType.Text:
-                            string value = reader.Value;
+                            var value = reader.Value;
 
                             var sb = new StringBuilder();
-                            foreach(char c in value)
+                            foreach(var c in value)
                                 sb.Append(c.Translate(targetCharSet,_fallbackChar));
                             
                             writer.WriteString(sb.ToString());
@@ -310,16 +313,14 @@ namespace EAI.BE.BizTalk.PipelineComponents
         private static Stream GetSeekeableMessageStream(IBaseMessage message)
         {
             var messageStream = message.BodyPart.GetOriginalDataStream();
-            if (!messageStream.CanSeek)
-            {
-                // Create a virtual and seekable stream
-                int bufferSize = 0x280;
-                int thresholdSize = 0x100000;
-                Stream virtualReadStream = new VirtualStream(bufferSize, thresholdSize);
-                Stream seekableReadStream = new ReadOnlySeekableStream(messageStream, virtualReadStream, bufferSize);
-                messageStream = seekableReadStream;
-                message.BodyPart.Data = messageStream;
-            }
+            if (messageStream.CanSeek) return messageStream;
+            // Create a virtual and seekable stream
+            const int bufferSize = 0x280;
+            const int thresholdSize = 0x100000;
+            Stream virtualReadStream = new VirtualStream(bufferSize, thresholdSize);
+            Stream seekableReadStream = new ReadOnlySeekableStream(messageStream, virtualReadStream, bufferSize);
+            messageStream = seekableReadStream;
+            message.BodyPart.Data = messageStream;
             return messageStream;
         }
 

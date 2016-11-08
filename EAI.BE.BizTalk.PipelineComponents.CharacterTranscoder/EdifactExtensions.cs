@@ -15,11 +15,11 @@ namespace EAI.BE.BizTalk.Extensions
 
     public static class EdifactExtensions
     {
-        private static Encoding ISO_8859_1 = Encoding.GetEncoding("ISO-8859-1");
+        private static readonly Encoding Iso88591 = Encoding.GetEncoding("ISO-8859-1");
 
-        private static Encoding UTF8 = new UTF8Encoding();
+        private static readonly Encoding Utf8 = new UTF8Encoding();
 
-        public static bool IsUNOA(this char c)
+        public static bool IsUnoa(this char c)
         {
 
             //UNOA allows:
@@ -32,7 +32,7 @@ namespace EAI.BE.BizTalk.Extensions
             return (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '.' || c == ',' || c == '-' || c == '(' || c == ')' || c == '/' || c == '=' || c == ' ';
         }
 
-        public static bool IsUNOB(this char c)
+        public static bool IsUnob(this char c)
         {
 
             //UNOB allows:
@@ -41,173 +41,143 @@ namespace EAI.BE.BizTalk.Extensions
             //a to z
             //‘ + : ? ! ” % & * ; < >
 
-            return IsUNOA(c) || (c >= 'a' && c <= 'z') || c == '\'' || c == '+' || c == ':' || c == '?' || c == '!' || c == '"' || c == '%' || c == '&' || c == '*' || c == ';' || c == '>' || c == '<';
+            return IsUnoa(c) || (c >= 'a' && c <= 'z') || c == '\'' || c == '+' || c == ':' || c == '?' || c == '!' || c == '"' || c == '%' || c == '&' || c == '*' || c == ';' || c == '>' || c == '<';
         }
 
-        public static bool IsUNOC(this char c)
+        public static bool IsUnoc(this char c)
         {
 
             //UNOC allows:
 
             //ISO 8859 character set
 
-            byte[] bytes = ISO_8859_1.GetBytes(new char[] { c }, 0, 1);
-            char[] result = ISO_8859_1.GetChars(bytes);
-            if (result.GetLength(0) == 0)
-                return false;
-            return Char.Equals(c, result[0]);
+            var bytes = Iso88591.GetBytes(new char[] { c }, 0, 1);
+            var result = Iso88591.GetChars(bytes);
+            return result.GetLength(0) != 0 && Equals(c, result[0]);
         }
 
-        public static bool IsUNOD_UNOK(this char c)
+        public static bool IsUnod_Unok(this char c)
         {
             //UNOD-UNOK allows:
 
             //All of UNOA-UNOC
             //All of UTF8 characters
 
-            return IsUNOC(c) || IsUTF8(c);
+            return IsUnoc(c) || IsUtf8(c);
         }
 
-        public static bool IsUTF8(this char c)
+        public static bool IsUtf8(this char c)
         {
-            byte[] bytes = UTF8.GetBytes(new char[] { c }, 0, 1);
-            char[] result = UTF8.GetChars(bytes);
-            if (result.GetLength(0) == 0)
-                return false;
-            return Char.Equals(c, result[0]);
+            var bytes = Utf8.GetBytes(new char[] { c }, 0, 1);
+            var result = Utf8.GetChars(bytes);
+            return result.GetLength(0) != 0 && Equals(c, result[0]);
         }
 
 
-        public static char ToUNOA(this char c, char fallback = ' ')
+        public static char ToUnoa(this char c, char fallback = ' ')
         {
             if (char.IsControl(c))
                 return c;
 
-            if (c.IsUNOA())
+            if (c.IsUnoa())
                 return c;
 
-            char normalized = c.Normalize();
+            var normalized = c.Normalize();
 
-            if (normalized.IsUNOA())
+            if (normalized.IsUnoa())
                 return normalized;
 
-            char upper = char.ToUpperInvariant(normalized);
+            var upper = char.ToUpperInvariant(normalized);
 
-            if (upper.IsUNOA())
-            {
-                return upper;
-            }
-
-            return fallback;
-
+            return upper.IsUnoa() ? upper : fallback;
         }
 
-        public static char ToUNOB(this char c, char fallback = ' ')
+        public static char ToUnob(this char c, char fallback = ' ')
         {
             if (char.IsControl(c))
                 return c;
 
-            if (c.IsUNOB())
+            if (c.IsUnob())
                 return c;
 
-            char normalized = c.Normalize();
+            var normalized = c.Normalize();
 
-            if (normalized.IsUNOB())
-            {
-
-                return normalized;
-            }
-
-            return fallback;
-
+            return normalized.IsUnob() ? normalized : fallback;
         }
 
-        public static char ToUNOC(this char c, char fallback = ' ')
+        public static char ToUnoc(this char c, char fallback = ' ')
         {
             if (char.IsControl(c))
                 return c;
 
 
-            if (c.IsUNOC())
+            if (c.IsUnoc())
                 return c;
 
-            char normalized = c.Normalize();
+            var normalized = c.Normalize();
 
-            if (normalized.IsUNOC())
-            {
-
-                return normalized;
-            }
-
-            return fallback;
-
+            return normalized.IsUnoc() ? normalized : fallback;
         }
 
 
-        public static char ToUNOD(this char c, char fallback = ' ')
+        public static char ToUnod(this char c, char fallback = ' ')
         {
-            return c.ToUNOD_UNOK(fallback);
+            return c.ToUnod_Unok(fallback);
         }
 
-        public static char ToUNOE(this char c, char fallback = ' ')
+        public static char ToUnoe(this char c, char fallback = ' ')
         {
-            return c.ToUNOD_UNOK(fallback);
+            return c.ToUnod_Unok(fallback);
         }
 
-        public static char ToUNOF(this char c, char fallback = ' ')
+        public static char ToUnof(this char c, char fallback = ' ')
         {
-            return c.ToUNOD_UNOK(fallback);
+            return c.ToUnod_Unok(fallback);
         }
 
-        public static char ToUNOG(this char c, char fallback = ' ')
+        public static char ToUnog(this char c, char fallback = ' ')
         {
-            return c.ToUNOD_UNOK(fallback);
+            return c.ToUnod_Unok(fallback);
         }
 
-        public static char ToUNOH(this char c, char fallback = ' ')
+        public static char ToUnoh(this char c, char fallback = ' ')
         {
-            return c.ToUNOD_UNOK(fallback);
+            return c.ToUnod_Unok(fallback);
         }
 
-        public static char ToUNOI(this char c, char fallback = ' ')
+        public static char ToUnoi(this char c, char fallback = ' ')
         {
-            return c.ToUNOD_UNOK(fallback);
+            return c.ToUnod_Unok(fallback);
         }
 
-        public static char ToUNOJ(this char c, char fallback = ' ')
+        public static char ToUnoj(this char c, char fallback = ' ')
         {
-            return c.ToUNOD_UNOK(fallback);
+            return c.ToUnod_Unok(fallback);
         }
 
-        public static char ToUNOK(this char c, char fallback = ' ')
+        public static char ToUnok(this char c, char fallback = ' ')
         {
-            return c.ToUNOD_UNOK(fallback);
+            return c.ToUnod_Unok(fallback);
         }
 
-        private static char ToUNOD_UNOK(this char c, char fallback = ' ')
+        private static char ToUnod_Unok(this char c, char fallback = ' ')
         {
             if (char.IsControl(c))
                 return c;
 
 
-            if (c.IsUNOD_UNOK())
+            if (c.IsUnod_Unok())
                 return c;
 
-            char normalized = c.Normalize();
+            var normalized = c.Normalize();
 
-            if (normalized.IsUNOD_UNOK())
-            {
-                return normalized;
-            }
-
-            return fallback;
-
+            return normalized.IsUnod_Unok() ? normalized : fallback;
         }
 
         public static char Normalize(this char ch)
         {
-            string s = ch.ToString();
-            foreach (char c in s.Normalize(NormalizationForm.FormKD))
+            var s = ch.ToString();
+            foreach (var c in s.Normalize(NormalizationForm.FormKD))
                 switch (CharUnicodeInfo.GetUnicodeCategory(c))
                 {
                     case UnicodeCategory.NonSpacingMark:
@@ -228,27 +198,27 @@ namespace EAI.BE.BizTalk.Extensions
             switch (charSet)
             {
                 case EdifactCharacterSet.UNOA:
-                    return ch.ToUNOA(fallbackChar);
+                    return ch.ToUnoa(fallbackChar);
                 case EdifactCharacterSet.UNOB:
-                    return ch.ToUNOB(fallbackChar);
+                    return ch.ToUnob(fallbackChar);
                 case EdifactCharacterSet.UNOC:
-                    return ch.ToUNOC(fallbackChar);
+                    return ch.ToUnoc(fallbackChar);
                 case EdifactCharacterSet.UNOD:
-                    return ch.ToUNOC(fallbackChar);
+                    return ch.ToUnoc(fallbackChar);
                 case EdifactCharacterSet.UNOE:
-                    return ch.ToUNOE(fallbackChar);
+                    return ch.ToUnoe(fallbackChar);
                 case EdifactCharacterSet.UNOF:
-                    return ch.ToUNOF(fallbackChar);
+                    return ch.ToUnof(fallbackChar);
                 case EdifactCharacterSet.UNOG:
-                    return ch.ToUNOG(fallbackChar);
+                    return ch.ToUnog(fallbackChar);
                 case EdifactCharacterSet.UNOH:
-                    return ch.ToUNOH(fallbackChar);
+                    return ch.ToUnoh(fallbackChar);
                 case EdifactCharacterSet.UNOI:
-                    return ch.ToUNOI(fallbackChar);
+                    return ch.ToUnoi(fallbackChar);
                 case EdifactCharacterSet.UNOJ:
-                    return ch.ToUNOJ(fallbackChar);
+                    return ch.ToUnoj(fallbackChar);
                 case EdifactCharacterSet.UNOK:
-                    return ch.ToUNOK(fallbackChar);
+                    return ch.ToUnok(fallbackChar);
                 case EdifactCharacterSet.UNOX:
                 case EdifactCharacterSet.UNOY:
                 case EdifactCharacterSet.KECA:

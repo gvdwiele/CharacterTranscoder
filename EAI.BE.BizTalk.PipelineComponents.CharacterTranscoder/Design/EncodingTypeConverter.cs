@@ -23,30 +23,19 @@ namespace Winterdom.BizTalk.Samples.FixEncoding.Design
    {
       public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
       {
-         if ( sourceType == typeof(string) )
-         {
-            return true;
-         }
-         return base.CanConvertFrom(context, sourceType);
+          return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
       }
 
       public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
       {
-         if ( destinationType == typeof(string) )
-         {
-            return true;
-         }
-         return base.CanConvertTo(context, destinationType);
+          return destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
       }
 
       public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
       {
-         if ( value is string )
-         {
-            string text = ((string)value).Trim();
-            return Encoding.GetEncoding(text);
-         }
-         return base.ConvertFrom(context, culture, value);
+          if (!(value is string)) return base.ConvertFrom(context, culture, value);
+          var text = ((string)value).Trim();
+          return Encoding.GetEncoding(text);
       }
 
       public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
@@ -55,7 +44,7 @@ namespace Winterdom.BizTalk.Samples.FixEncoding.Design
          {
             throw new ArgumentNullException("destinationType");
          }
-         Encoding enc = value as Encoding;
+         var enc = value as Encoding;
          if ( (destinationType == typeof(string)) && (enc != null) )
          {
             return enc.EncodingName;

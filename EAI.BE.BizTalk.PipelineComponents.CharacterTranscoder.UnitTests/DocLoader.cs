@@ -15,22 +15,22 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         /// <returns></returns>
         public static Stream LoadStream(string name)
         {
-            string resName = typeof(DocLoader).Namespace + "." + name;
-            Assembly assembly = Assembly.GetExecutingAssembly();
+            var resName = typeof(DocLoader).Namespace + "." + name;
+            var assembly = Assembly.GetExecutingAssembly();
             return assembly.GetManifestResourceStream(resName);
         }
 
         public static void ExtractToDir(string name, string dir)
         {
-            string fullname = Path.Combine(dir, name);
-            using (Stream source = LoadStream(name))
+            var fullname = Path.Combine(dir, name);
+            using (var source = LoadStream(name))
             using (Stream target = File.Create(fullname))
                 CopyStream(source, target);
         }
 
         private static void CopyStream(Stream source, Stream target)
         {
-            byte[] buffer = new byte[4096];
+            var buffer = new byte[4096];
             int read;
             while ((read = source.Read(buffer, 0, buffer.Length)) > 0)
                 target.Write(buffer, 0, read);

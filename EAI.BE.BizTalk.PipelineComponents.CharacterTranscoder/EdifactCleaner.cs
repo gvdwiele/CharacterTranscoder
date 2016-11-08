@@ -28,7 +28,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
     [ComponentCategory(CategoryTypes.CATID_Decoder)]
     public class EdifactCleaner : Microsoft.BizTalk.Component.Interop.IComponent, IBaseComponent, IPersistPropertyBag, IComponentUI
     {
-        private System.Resources.ResourceManager resourceManager = new System.Resources.ResourceManager("EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder", Assembly.GetExecutingAssembly());
+        private readonly System.Resources.ResourceManager _resourceManager = new System.Resources.ResourceManager("EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder", Assembly.GetExecutingAssembly());
 
         private Encoding _encoding = Encoding.UTF8;
 
@@ -73,25 +73,13 @@ namespace EAI.BE.BizTalk.PipelineComponents
             set { _fallbackChar = value; }
         }
 
-        bool _normalize;
         [Browsable(true)]
         [DisplayName("Normalize invalid characters")]
-        public bool Normalize
-        {
-            get { return _normalize; }
-            set { _normalize = value; }
-        }
+        public bool Normalize { get; set; }
 
-        bool _removeControlChars;
         [Browsable(true)]
         [DisplayName("Remove Control Characters")]
-        public bool RemoveControlChars
-        {
-            get { return _removeControlChars; }
-            set { _removeControlChars = value; }
-        }
-
-
+        public bool RemoveControlChars { get; set; }
 
 
         [Browsable(true)]
@@ -107,7 +95,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
             get
             {
-                return resourceManager.GetString("COMPONENTNAME.EdifactCleaner", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTNAME.EdifactCleaner", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -119,7 +107,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
             get
             {
-                return resourceManager.GetString("COMPONENTVERSION.EdifactCleaner", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTVERSION.EdifactCleaner", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -131,7 +119,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
             get
             {
-                return resourceManager.GetString("COMPONENTDESCRIPTION.EdifactCleaner", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTDESCRIPTION.EdifactCleaner", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         #endregion
@@ -163,7 +151,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         public virtual void Load(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, int errlog)
         {
             object val = null;
-            val = this.ReadPropertyBag(pb, "Encoding");
+            val = ReadPropertyBag(pb, "Encoding");
             if ((val != null))
             {
                 this._encoding = Encoding.GetEncoding((int)(val));
@@ -206,12 +194,12 @@ namespace EAI.BE.BizTalk.PipelineComponents
         /// <param name="fSaveAllProperties">not used</param>
         public virtual void Save(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, bool fClearDirty, bool fSaveAllProperties)
         {
-            this.WritePropertyBag(pb, "Encoding", this.Encoding.CodePage);
-            this.WritePropertyBag(pb, "TargetCharSet", this.TargetCharSet.ToString());
-            this.WritePropertyBag(pb, "OverrideCharSet", this.OverrideCharSet);
-            this.WritePropertyBag(pb, "Normalize", this.Normalize);
-            this.WritePropertyBag(pb, "RemoveControlChars", this.RemoveControlChars);
-            this.WritePropertyBag(pb, "FallbackChar", this.FallbackChar);
+            WritePropertyBag(pb, "Encoding", this.Encoding.CodePage);
+            WritePropertyBag(pb, "TargetCharSet", this.TargetCharSet.ToString());
+            WritePropertyBag(pb, "OverrideCharSet", this.OverrideCharSet);
+            WritePropertyBag(pb, "Normalize", this.Normalize);
+            WritePropertyBag(pb, "RemoveControlChars", this.RemoveControlChars);
+            WritePropertyBag(pb, "FallbackChar", this.FallbackChar);
         }
 
         #region utility functionality
@@ -221,7 +209,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         /// <param name="pb">Property bag</param>
         /// <param name="propName">Name of property</param>
         /// <returns>Value of the property</returns>
-        private object ReadPropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName)
+        private static object ReadPropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName)
         {
             object val = null;
             try
@@ -245,7 +233,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         /// <param name="pb">Property bag.</param>
         /// <param name="propName">Name of property.</param>
         /// <param name="val">Value of property.</param>
-        private void WritePropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName, object val)
+        private static void WritePropertyBag(Microsoft.BizTalk.Component.Interop.IPropertyBag pb, string propName, object val)
         {
             try
             {
@@ -268,7 +256,12 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
             get
             {
-                return ((System.Drawing.Bitmap)(this.resourceManager.GetObject("COMPONENTICON", System.Globalization.CultureInfo.InvariantCulture))).GetHicon();
+                var bitmap = (System.Drawing.Bitmap)(this._resourceManager.GetObject("COMPONENTICON", System.Globalization.CultureInfo.InvariantCulture));
+                return bitmap !=
+                       null ? bitmap.GetHicon() : IntPtr.Zero;
+
+                ;
+
             }
         }
 
@@ -303,7 +296,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
 
             var encoding = this.Encoding;
-            if (inmsg.BodyPart.Charset != null && inmsg.BodyPart.Charset.Length > 0)
+            if (!string.IsNullOrEmpty(inmsg.BodyPart.Charset))
             {
                 encoding = Encoding.GetEncoding(inmsg.BodyPart.Charset);
             }
@@ -344,16 +337,14 @@ namespace EAI.BE.BizTalk.PipelineComponents
         private static Stream GetSeekeableMessageStream(IBaseMessage message)
         {
             var messageStream = message.BodyPart.GetOriginalDataStream();
-            if (!messageStream.CanSeek)
-            {
-                // Create a virtual and seekable stream
-                int bufferSize = 0x280;
-                int thresholdSize = 0x100000;
-                Stream virtualReadStream = new VirtualStream(bufferSize, thresholdSize);
-                Stream seekableReadStream = new ReadOnlySeekableStream(messageStream, virtualReadStream, bufferSize);
-                messageStream = seekableReadStream;
-                message.BodyPart.Data = messageStream;
-            }
+            if (messageStream.CanSeek) return messageStream;
+            // Create a virtual and seekable stream
+            const int bufferSize = 0x280;
+            const int thresholdSize = 0x100000;
+            Stream virtualReadStream = new VirtualStream(bufferSize, thresholdSize);
+            Stream seekableReadStream = new ReadOnlySeekableStream(messageStream, virtualReadStream, bufferSize);
+            messageStream = seekableReadStream;
+            message.BodyPart.Data = messageStream;
             return messageStream;
         }
 
@@ -374,9 +365,9 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
             using (var sr = new StreamReader(stream, encoding))
             {
-                string edifact = sr.ReadToEnd();
+                var edifact = sr.ReadToEnd();
 
-                var unoIndex = edifact.IndexOf("UNO");
+                var unoIndex = edifact.IndexOf("UNO", StringComparison.Ordinal);
 
                 if (unoIndex >= 0 && edifact.Length > 3)
                 {
@@ -390,8 +381,8 @@ namespace EAI.BE.BizTalk.PipelineComponents
                     }
                 }
 
-                MemoryStream result = new MemoryStream();
-                StreamWriter writer = new StreamWriter(result);
+                var result = new MemoryStream();
+                var writer = new StreamWriter(result);
                 writer.Write(edifact);
                 writer.Flush();
                 result.Position = 0;

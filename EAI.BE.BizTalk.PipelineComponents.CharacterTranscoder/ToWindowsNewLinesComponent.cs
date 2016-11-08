@@ -24,7 +24,7 @@ using Microsoft.XLANGs.BaseTypes;
     [ComponentCategory(CategoryTypes.CATID_Any)]
     public class ToWindowsNewLinesComponent : Microsoft.BizTalk.Component.Interop.IComponent, IBaseComponent, IPersistPropertyBag, IComponentUI
     {
-        private System.Resources.ResourceManager resourceManager = new System.Resources.ResourceManager("EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder", Assembly.GetExecutingAssembly());
+        private readonly System.Resources.ResourceManager _resourceManager = new System.Resources.ResourceManager("EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder", Assembly.GetExecutingAssembly());
 
         
         #region IBaseComponent members
@@ -36,7 +36,7 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return resourceManager.GetString("COMPONENTNAME.ToWindowsNewLines", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTNAME.ToWindowsNewLines", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         
@@ -48,7 +48,7 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return resourceManager.GetString("COMPONENTVERSION.ToWindowsNewLines", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTVERSION.ToWindowsNewLines", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         
@@ -60,7 +60,7 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return resourceManager.GetString("COMPONENTDESCRIPTION.ToWindowsNewLines", System.Globalization.CultureInfo.InvariantCulture);
+                return _resourceManager.GetString("COMPONENTDESCRIPTION.ToWindowsNewLines", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
         #endregion
@@ -157,7 +157,11 @@ using Microsoft.XLANGs.BaseTypes;
         {
             get
             {
-                return ((System.Drawing.Bitmap)(this.resourceManager.GetObject("COMPONENTICON", System.Globalization.CultureInfo.InvariantCulture))).GetHicon();
+                var bitmap = (System.Drawing.Bitmap)(this._resourceManager.GetObject("COMPONENTICON", System.Globalization.CultureInfo.InvariantCulture));
+                return bitmap !=
+                       null ? bitmap.GetHicon() : IntPtr.Zero;
+
+                ;
             }
         }
         

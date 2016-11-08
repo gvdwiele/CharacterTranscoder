@@ -19,8 +19,8 @@ namespace EAI.BE.BizTalk.PipelineComponents
         private readonly char _fallbackChar;
 
         bool _normalize;
-        EdifactCharacterSet _charSet;
-        bool _removeControlChars;
+        readonly EdifactCharacterSet _charSet;
+        readonly bool _removeControlChars;
 
         public EdifactCharacterSet CharSet
         {
@@ -34,7 +34,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
                 throw new ArgumentNullException("stream");
 
             if (!stream.CanSeek)
-                throw new ArgumentNullException("stream must be seekeable");
+                throw new ArgumentNullException("stream");
 
             this._removeControlChars = removeControlChars;
             this._fallbackChar = fallbackChar;
@@ -51,33 +51,40 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
         public override int Peek()
         {
-            int value = base.Peek();
-            if (value == -1)
-                return value;
+            while (true)
+            {
+                var value = base.Peek();
+                if (value == -1)
+                    return value;
 
-            char c = (char)value;
+                var c = (char) value;
 
-            if (_removeControlChars && char.IsControl(c))
-                return Peek(); // recurse
+                if (_removeControlChars && char.IsControl(c))
+                    continue;
 
-            return c.Translate(_charSet, _fallbackChar);
+                return c.Translate(_charSet, _fallbackChar);
 
+                break;
+            }
         }
 
-        
 
         public override int Read()
         {
-            int value = base.Read();
-            if (value == -1)
-                return value;
+            while (true)
+            {
+                var value = base.Read();
+                if (value == -1)
+                    return value;
 
-            char c = (char)value;
+                var c = (char) value;
 
-            if (_removeControlChars && char.IsControl(c))
-                return Read(); // recurse
+                if (_removeControlChars && char.IsControl(c))
+                    continue;
 
-            return c.Translate(_charSet, _fallbackChar);
+                return c.Translate(_charSet, _fallbackChar);
+                break;
+            }
         }
 
         public override string ReadToEnd()
@@ -95,7 +102,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
         public override string ReadLine()
         {
-            string input = base.ReadLine();
+            var input = base.ReadLine();
 
             if (input == null)
                 return null;
@@ -105,7 +112,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
             var sb = new StringBuilder();
 
-            foreach (char c in input)
+            foreach (var c in input)
             {
                 if (!(_removeControlChars && char.IsControl(c)))
                 {
@@ -115,10 +122,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
             var line = sb.ToString();
 
-            if (line == string.Empty)
-                return ReadLine(); //recurse
-
-            return line;
+            return line == string.Empty ? ReadLine() : line;
         }
 
         //public override int Read(char[] buffer, int index, int count)

@@ -22,16 +22,14 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void GradualRead()
         {
-            string value = "ABC";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABC";
+            var bytesUtf8 = Encoding.UTF8.GetBytes(value);
+            var output = new byte[3];
 
-            Stream after = new WindowsNewLineStream(new MemoryStream(bytesUTF8));
+            Stream after = new WindowsNewLineStream(new MemoryStream(bytesUtf8));
 
-            int count;
-            
-            count = after.Read(output, 0, 1);
-            Assert.AreEqual<int>(1,count);
+            var count = after.Read(output, 0, 1);
+            Assert.AreEqual<int>(1, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { A, 0, 0 }));
 
             count = after.Read(output, 1, 1);
@@ -48,15 +46,13 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void ReadMultipleBytes()
         {
-            string value = "ABC";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABC";
+            var bytesUtf8 = Encoding.UTF8.GetBytes(value);
+            var output = new byte[3];
 
-            Stream after = new WindowsNewLineStream(new MemoryStream(bytesUTF8));
+            Stream after = new WindowsNewLineStream(new MemoryStream(bytesUtf8));
 
-            int count;
-
-            count = after.Read(output, 0, 3);
+            var count = after.Read(output, 0, 3);
             Assert.AreEqual<int>(3, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { A, B, C }));
 
@@ -64,17 +60,15 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
 
 
         [TestMethod]
-        public void TryReadBeyondEOS()
+        public void TryReadBeyondEos()
         {
-            string value = "ABC";
-            byte[] bytesUTF8 = Encoding.UTF8.GetBytes(value);
-            byte[] output = new byte[3];
+            const string value = "ABC";
+            var bytesUtf8 = Encoding.UTF8.GetBytes(value);
+            var output = new byte[3];
 
-            Stream after = new WindowsNewLineStream(new MemoryStream(bytesUTF8));
+            Stream after = new WindowsNewLineStream(new MemoryStream(bytesUtf8));
 
-            int count;
-
-            count = after.Read(output, 0, 5);
+            var count = after.Read(output, 0, 5);
             Assert.AreEqual<int>(3, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { A, B, C }));
             count = after.Read(output, 0, 5);
@@ -83,30 +77,26 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         }
 
         [TestMethod]
-        public void WhenEOSorEMptyStreamReturnMinusOne()
+        public void WhenEosOrEmptyStreamReturnMinusOne()
         {
-            byte[] output = new byte[3];
+            var output = new byte[3];
 
-            Stream after = new WindowsNewLineStream(new MemoryStream(new byte[]{}));
+            Stream after = new WindowsNewLineStream(new MemoryStream(new byte[] { }));
 
-            int count;
-
-            count = after.Read(output, 0, 1);
+            var count = after.Read(output, 0, 1);
             Assert.AreEqual<int>(0, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { 0, 0, 0 }));
         }
 
-        
+
         [TestMethod]
-        public void InsertLFWhenMissing()
+        public void InsertLfWhenMissing()
         {
-            byte[] output = new byte[3];
+            var output = new byte[3];
 
             Stream after = new WindowsNewLineStream(new MemoryStream(new byte[] { WindowsNewLineStream.CR, WindowsNewLineStreamTests.A }));
 
-            int count;
-
-            count = after.Read(output, 0, 1);
+            var count = after.Read(output, 0, 1);
             Assert.AreEqual<int>(1, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, 0, 0 }));
 
@@ -123,13 +113,11 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         [TestMethod]
         public void PassthruWindowsNewLine()
         {
-            byte[] output = new byte[3];
+            var output = new byte[3];
 
             Stream after = new WindowsNewLineStream(new MemoryStream(new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF, WindowsNewLineStreamTests.A }));
 
-            int count;
-
-            count = after.Read(output, 0, 1);
+            var count = after.Read(output, 0, 1);
             Assert.AreEqual<int>(1, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, 0, 0 }));
 
@@ -144,21 +132,19 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         }
 
         [TestMethod]
-        public void CarriageReturnAtEOS()
+        public void CarriageReturnAtEos()
         {
-            byte[] output = new byte[2];
+            var output = new byte[2];
 
-            Stream after = new WindowsNewLineStream(new MemoryStream(new byte[] { WindowsNewLineStream.CR}));
+            Stream after = new WindowsNewLineStream(new MemoryStream(new byte[] { WindowsNewLineStream.CR }));
 
-            int count;
-
-            count = after.Read(output, 0, 1);
+            var count = after.Read(output, 0, 1);
             Assert.AreEqual<int>(1, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, 0 }));
 
             count = after.Read(output, 1, 1);
             Assert.AreEqual<int>(1, count);
-            Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF}));
+            Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF }));
 
             count = after.Read(output, 2, 1);
             Assert.AreEqual<int>(0, count);
@@ -167,15 +153,13 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         }
 
         [TestMethod]
-        public void InsertCRWhenMissing()
+        public void InsertCrWhenMissing()
         {
-            byte[] output = new byte[4];
+            var output = new byte[4];
 
             Stream after = new WindowsNewLineStream(new MemoryStream(new byte[] { WindowsNewLineStream.LF, WindowsNewLineStream.LF }));
 
-            int count;
-
-            count = after.Read(output, 0, 4);
+            var count = after.Read(output, 0, 4);
             Assert.AreEqual<int>(4, count);
             Assert.IsTrue(ByteArrayCompare(output, new byte[] { WindowsNewLineStream.CR, WindowsNewLineStream.LF, WindowsNewLineStream.CR, WindowsNewLineStream.LF }));
         }
@@ -184,12 +168,11 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         public void IntegrationTestExecutingAndParsingFromPipeline()
         {
             //Microsoft.BizTalk.ParsingEngine.AbortException
-            Stream input = DocLoader.LoadStream("samples.ok.txt");
-            IBaseMessage msg = MessageHelper.CreateFromStream(input);
-            ReceivePipelineWrapper pipeline;
-            pipeline = WinterdomTesting.PipelineFactory.CreateReceivePipeline(typeof(ReceivePipelineToWindowsNewLineFF));
+            var input = DocLoader.LoadStream("samples.ok.txt");
+            var msg = MessageHelper.CreateFromStream(input);
+            var pipeline = WinterdomTesting.PipelineFactory.CreateReceivePipeline(typeof(ReceivePipelineToWindowsNewLineFF));
             pipeline.AddDocSpec(typeof(FlatFileManifest));
-            WinterdomTesting.MessageCollection col = pipeline.Execute(msg);
+            var col = pipeline.Execute(msg);
             Assert.AreEqual(1, col.Count);
         }
 
@@ -197,24 +180,22 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
         public void IntegrationTestExecutingAndParsingFromPipelineFailure()
         {
             //Microsoft.BizTalk.ParsingEngine.AbortException
-            Stream input = DocLoader.LoadStream("samples.nok.txt");
-            IBaseMessage msg = MessageHelper.CreateFromStream(input);
-            ReceivePipelineWrapper pipeline;
-            pipeline = WinterdomTesting.PipelineFactory.CreateReceivePipeline(typeof(ReceivePipelineToWindowsNewLineFF));
+            var input = DocLoader.LoadStream("samples.nok.txt");
+            var msg = MessageHelper.CreateFromStream(input);
+            var pipeline = WinterdomTesting.PipelineFactory.CreateReceivePipeline(typeof(ReceivePipelineToWindowsNewLineFF));
             pipeline.AddDocSpec(typeof(FlatFileManifest));
-            WinterdomTesting.MessageCollection col = pipeline.Execute(msg);
+            var col = pipeline.Execute(msg);
             Assert.AreEqual(1, col.Count);
         }
 
         [TestMethod]
         public void IntegrationTestExecutingFromPipeline()
         {
-            Stream input = DocLoader.LoadStream("samples.ok.txt");
-            IBaseMessage msg = MessageHelper.CreateFromStream(input);
-            ReceivePipelineWrapper pipeline;
-            pipeline = WinterdomTesting.PipelineFactory.CreateReceivePipeline(typeof(ReceivePipelineToWindowsNewLine));
+            var input = DocLoader.LoadStream("samples.ok.txt");
+            var msg = MessageHelper.CreateFromStream(input);
+            var pipeline = WinterdomTesting.PipelineFactory.CreateReceivePipeline(typeof(ReceivePipelineToWindowsNewLine));
             pipeline.AddDocSpec(typeof(FlatFileManifest));
-            WinterdomTesting.MessageCollection col = pipeline.Execute(msg);
+            var col = pipeline.Execute(msg);
             Assert.AreEqual(1, col.Count);
         }
 
@@ -230,13 +211,13 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
 
         public static MemoryStream Fix3F(Stream source)
         {
-            MemoryStream target = new MemoryStream();
-            Encoding targetEncoding = Encoding.GetEncoding(1252);
+            var target = new MemoryStream();
+            var targetEncoding = Encoding.GetEncoding(1252);
 
-            StreamReader sourceReader = new StreamReader(source, Encoding.UTF8, false);
-            StreamWriter targetWriter = new StreamWriter(target, targetEncoding);
+            var sourceReader = new StreamReader(source, Encoding.UTF8, false);
+            var targetWriter = new StreamWriter(target, targetEncoding);
 
-            int charRead = sourceReader.Read();
+            var charRead = sourceReader.Read();
             while (charRead != -1)
             {
                 targetWriter.Write((char)charRead);
@@ -249,15 +230,15 @@ namespace EAI.BE.BizTalk.PipelineComponents.CharacterTranscoder.UnitTests
 
         private static byte[] StreamToArray(Stream bytes)
         {
-            int read = bytes.ReadByte();
-            List<byte> listOfBytes = new List<byte>();
+            var read = bytes.ReadByte();
+            var listOfBytes = new List<byte>();
             while (read != -1)
             {
                 listOfBytes.Add((byte)read);
                 read = bytes.ReadByte();
             }
-            byte[] output = listOfBytes.ToArray();
-            
+            var output = listOfBytes.ToArray();
+
             return output;
         }
     }

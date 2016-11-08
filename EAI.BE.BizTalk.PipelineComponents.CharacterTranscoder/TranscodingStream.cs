@@ -10,12 +10,12 @@ namespace EAI.BE.BizTalk.PipelineComponents
     /// </summary>
     public class TranscodingStream : Stream
     {
-        private Stream _stream;
-        private StreamReader _reader;
-        private Encoder _encoder;
+        private readonly Stream _stream;
+        private readonly StreamReader _reader;
+        private readonly Encoder _encoder;
         private long _position = 0;
 
-        private Queue<byte> _buffer = new Queue<byte>(3);
+        private readonly Queue<byte> _buffer = new Queue<byte>(3);
         private bool _bufferFilled = false;
 
         private TranscodingStream(Stream stream, Encoding outEncoding) 
@@ -40,15 +40,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
         public TranscodingStream(Stream stream, Encoding outEncoding, bool detectEncodingFromByteOrderMarks) : this(stream,outEncoding)
         {
-            if (detectEncodingFromByteOrderMarks == false)
-            {
-                this._reader = new StreamReader(_stream, Encoding.UTF8);
-            }
-            else
-            {
-                this._reader = new StreamReader(_stream, true);
-            }
-
+            this._reader = detectEncodingFromByteOrderMarks == false ? new StreamReader(_stream, Encoding.UTF8) : new StreamReader(_stream, true);
         }
 
         public override bool CanRead
@@ -96,17 +88,17 @@ namespace EAI.BE.BizTalk.PipelineComponents
             //if (_position < 0)
             //    throw new InvalidOperationException();
 
-            int written = 0;
-            int open = offset + count > buffer.Length ? buffer.Length - offset : count;
-            int position = 0;
-            int read = 0;
-            int write = 0;
-            char[] readBuffer;
+            var written = 0;
+            var open = offset + count > buffer.Length ? buffer.Length - offset : count;
+            var position = 0;
+            var write = 0;
 
             while (open > 0)
             {
-                int maxSafeWrite = open / 4;
-                
+                var maxSafeWrite = open / 4;
+                var read = 0;
+                char[] readBuffer;
+
                 if(maxSafeWrite>0)
                 {
                     readBuffer = new char[maxSafeWrite];
@@ -143,7 +135,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
                         {
                             //more bytes are read from source than available in the output buffer 
                             write = open;
-                            for (int i = 0; i < writeBuffer.Length - open; i++)
+                            for (var i = 0; i < writeBuffer.Length - open; i++)
                             {
                                 _buffer.Enqueue(writeBuffer[i + open]);
                             }
@@ -154,7 +146,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
                             write = writeBuffer.Length;
                         }
 
-                        for (int i = 0; i < write; i++)
+                        for (var i = 0; i < write; i++)
                         {
                             if (offset + position > buffer.GetUpperBound(0))
                                 return written;

@@ -11,10 +11,10 @@ namespace EAI.BE.BizTalk.PipelineComponents
     /// </summary>
     public class WindowsNewLineStream : Stream
     {
-        private Stream _stream;
+        private readonly Stream _stream;
         private long _position = 0;
 
-        private Queue<int> _buffer = new Queue<int>(1);
+        private readonly Queue<int> _buffer = new Queue<int>(1);
         private bool _bufferFilled = false;
         private bool _isOpen = false;
 
@@ -23,7 +23,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         public const int CR = 13;
         public const int LF = 10;
 
-        private static TraceSwitch s_TraceSwitch = new TraceSwitch("WindowsNewLineStream tracing", "", TraceLevel.Warning.ToString());
+        private static readonly TraceSwitch TraceSwitch = new TraceSwitch("WindowsNewLineStream tracing", "", TraceLevel.Warning.ToString());
 
         public WindowsNewLineStream(Stream stream)
         {
@@ -77,8 +77,8 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
         public override int ReadByte()
         {
-            byte[] buffer = new byte[]{0};
-            int read = Read(buffer, 0, 1);
+            var buffer = new byte[]{0};
+            var read = Read(buffer, 0, 1);
             return (read == 0 ? -1 : buffer[0]);
         }
 
@@ -91,20 +91,20 @@ namespace EAI.BE.BizTalk.PipelineComponents
         /// <returns></returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            int read = 0;
-            int next, nextnext;
+            var read = 0;
 
-            Trace.WriteLineIf(s_TraceSwitch.TraceVerbose, "\nRead start.");
-            Trace.WriteLineIf(s_TraceSwitch.TraceVerbose, String.Format("_bufferfilled={0} buffer={1} offset={2} count={3}",_bufferFilled.ToString(),buffer.Length,offset.ToString(),count.ToString()));
+            Trace.WriteLineIf(TraceSwitch.TraceVerbose, "\nRead start.");
+            Trace.WriteLineIf(TraceSwitch.TraceVerbose, string.Format("_bufferfilled={0} buffer={1} offset={2} count={3}",_bufferFilled.ToString(),buffer.Length,offset.ToString(),count.ToString()));
 
             do
             {
+                int next;
                 if (_bufferFilled)
                 {
                     next = _buffer.Dequeue();
                     if (next == -1)
                     {
-                        Trace.WriteLineIf(s_TraceSwitch.TraceVerbose, "Read exit 1: " + read);
+                        Trace.WriteLineIf(TraceSwitch.TraceVerbose, "Read exit 1: " + read);
                         _position += read;
                         return read;
                     }
@@ -117,14 +117,14 @@ namespace EAI.BE.BizTalk.PipelineComponents
                     
                     if (next == -1)
                     {
-                        Trace.WriteLineIf(s_TraceSwitch.TraceVerbose, "Read exit 2: " + read);
+                        Trace.WriteLineIf(TraceSwitch.TraceVerbose, "Read exit 2: " + read);
                         _position += read;
                         return read;
                     }
                     if (next == CR)
                     {
                         //check if followed by LF
-                        nextnext = _stream.ReadByte();
+                        var nextnext = _stream.ReadByte();
                         
                         if (nextnext != LF)
                         {
@@ -144,12 +144,10 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
                 buffer[offset + read] = (byte)next;
                 read++;
-                if (read == count)
-                {
-                    Trace.WriteLineIf(s_TraceSwitch.TraceVerbose, "Read exit 3: " + read);
-                    _position += read;
-                    return read;
-                }
+                if (read != count) continue;
+                Trace.WriteLineIf(TraceSwitch.TraceVerbose, "Read exit 3: " + read);
+                _position += read;
+                return read;
             }
             while (true);
         }

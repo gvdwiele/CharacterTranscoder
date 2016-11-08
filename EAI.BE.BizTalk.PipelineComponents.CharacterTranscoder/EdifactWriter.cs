@@ -15,7 +15,7 @@ namespace EAI.BE.BizTalk.PipelineComponents
         private readonly char _fallbackChar;
 
         bool _normalize;
-        EdifactCharacterSet _edifactCharacterSet;
+        readonly EdifactCharacterSet _edifactCharacterSet;
 
         public EdifactWriter(Stream stream, Encoding encoding, EdifactCharacterSet edifactCharacterSet, char replacementCharacter, bool normalize = true)
             : base(stream, encoding)
@@ -40,27 +40,27 @@ namespace EAI.BE.BizTalk.PipelineComponents
             switch (_edifactCharacterSet)
             {
                 case EdifactCharacterSet.UNOA:
-                    return ch.ToUNOA(_fallbackChar);
+                    return ch.ToUnoa(_fallbackChar);
                 case EdifactCharacterSet.UNOB:
-                    return ch.ToUNOB(_fallbackChar);
+                    return ch.ToUnob(_fallbackChar);
                 case EdifactCharacterSet.UNOC:
-                    return ch.ToUNOC(_fallbackChar);
+                    return ch.ToUnoc(_fallbackChar);
                 case EdifactCharacterSet.UNOD:
-                    return ch.ToUNOC(_fallbackChar);
+                    return ch.ToUnoc(_fallbackChar);
                 case EdifactCharacterSet.UNOE:
-                    return ch.ToUNOE(_fallbackChar);
+                    return ch.ToUnoe(_fallbackChar);
                 case EdifactCharacterSet.UNOF:
-                    return ch.ToUNOF(_fallbackChar);
+                    return ch.ToUnof(_fallbackChar);
                 case EdifactCharacterSet.UNOG:
-                    return ch.ToUNOG(_fallbackChar);
+                    return ch.ToUnog(_fallbackChar);
                 case EdifactCharacterSet.UNOH:
-                    return ch.ToUNOH(_fallbackChar);
+                    return ch.ToUnoh(_fallbackChar);
                 case EdifactCharacterSet.UNOI:
-                    return ch.ToUNOI(_fallbackChar);
+                    return ch.ToUnoi(_fallbackChar);
                 case EdifactCharacterSet.UNOJ:
-                    return ch.ToUNOJ(_fallbackChar);
+                    return ch.ToUnoj(_fallbackChar);
                 case EdifactCharacterSet.UNOK:
-                    return ch.ToUNOK(_fallbackChar);
+                    return ch.ToUnok(_fallbackChar);
                 case EdifactCharacterSet.UNOX:
                 case EdifactCharacterSet.UNOY:
                 case EdifactCharacterSet.KECA:

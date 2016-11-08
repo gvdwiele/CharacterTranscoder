@@ -65,8 +65,8 @@ namespace Winterdom.BizTalk.Samples.FixEncoding.Design
             editorService = (IWindowsFormsEditorService)
                provider.GetService(typeof(IWindowsFormsEditorService));
 
-            EncodingListControl control = new EncodingListControl();
-            Encoding selectedEncoding = (Encoding)value;
+            var control = new EncodingListControl();
+            var selectedEncoding = (Encoding)value;
             control.SelectedCodePage = selectedEncoding.CodePage;
             control.Click += delegate(object sender, EventArgs e)
             {
