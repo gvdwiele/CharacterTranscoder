@@ -486,7 +486,7 @@ XYZ...", result);
          public void EdifactXmlCleaner_Separators()
          {
              var msg = MessageHelper.CreateFromString("﻿<ROOT>Returns everything except the ! and the ?</ROOT>");
-             var cleaner = new EdifactXmlCleaner { TargetCharSet = EdifactCharacterSet.UNOC , Separators = "?!", FallbackChar = '*'};
+             var cleaner = new EdifactXmlCleaner { TargetCharSet = EdifactCharacterSet.UNOC , ExtraCharsToReplace = "?!", FallbackChar = '*'};
              var result = Winterdom.BizTalk.PipelineTesting.Simple.Pipelines.Send().WithPreAssembler(cleaner).End().Execute(msg);
 
              const string expected = "<?xml version=\"1.0\" encoding=\"utf-8\"?><ROOT>Returns everything except the * and the *</ROOT>";

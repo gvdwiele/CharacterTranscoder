@@ -20,9 +20,6 @@ namespace EAI.BE.BizTalk.PipelineComponents
     using System.Text.RegularExpressions;
     using Microsoft.BizTalk.Streaming;
 
-
-
-
     [ComponentCategory(CategoryTypes.CATID_PipelineComponent)]
     [System.Runtime.InteropServices.Guid("56FCE4CB-75A3-4877-8200-7BB1636A129F")]
     [ComponentCategory(CategoryTypes.CATID_Decoder)]

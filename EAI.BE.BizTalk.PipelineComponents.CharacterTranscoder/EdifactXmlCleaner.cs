@@ -60,15 +60,21 @@ namespace EAI.BE.BizTalk.PipelineComponents
             set { _fallbackChar = value; }
         }
 
-        private string _separators = "";
+        private string _extraCharsToReplace = "";
 
         [Browsable(true)]
-        [DisplayName("Separator characters")]
-        public string Separators
+        [DisplayName("Extra Replacement Characters")]
+        [Description("Extra characters you want to replace (such as separators).")]
+        public string ExtraCharsToReplace
         {
-            get { return _separators; }
-            set { _separators = value; }
+            get { return _extraCharsToReplace; }
+            set { _extraCharsToReplace = value; }
         }
+
+        [Browsable(true)]
+        [DisplayName("Normalize")]
+        [Description("Replaces control characters by spaces, deletes leading and trailing spaces.")]
+        public bool Normalize { get; set; }
 
 
         #region IBaseComponent members
@@ -145,14 +151,26 @@ namespace EAI.BE.BizTalk.PipelineComponents
             val = ReadPropertyBag(pb, "FallbackChar");
             if ((val != null))
             {
-                this.FallbackChar = ((char)(val));
+                if(val is char)
+                { 
+                    this.FallbackChar = ((char)(val));
+                }
+                if (val is ushort)
+                {
+                    this.FallbackChar = Convert.ToChar(val);
+                }
+
             }
-            val = ReadPropertyBag(pb, "Separators");
+            val = ReadPropertyBag(pb, "ExtraCharsToReplace");
             if ((val != null))
             {
-                this.Separators = ((string)(val));
+                this.ExtraCharsToReplace = ((string)(val));
             }
-
+            val = ReadPropertyBag(pb, "Normalize");
+            if ((val != null))
+            {
+                this.Normalize = ((bool)(val));
+            }
         }
 
 
@@ -166,7 +184,8 @@ namespace EAI.BE.BizTalk.PipelineComponents
         {
             WritePropertyBag(pb, "TargetCharSet", this.TargetCharSet.ToString());
             WritePropertyBag(pb, "FallbackChar", this.FallbackChar);
-            WritePropertyBag(pb, "Separators", this.Separators);
+            WritePropertyBag(pb, "ExtraCharsToReplace", this.ExtraCharsToReplace);
+            WritePropertyBag(pb, "Normalize", this.Normalize);
         }
 
         #region utility functionality
@@ -273,9 +292,9 @@ namespace EAI.BE.BizTalk.PipelineComponents
 
             var result = new MemoryStream();
 
-            var settings = new XmlWriterSettings {Encoding = Encoding.UTF8};
+            var settings = new XmlWriterSettings {Encoding = Encoding.UTF8, OmitXmlDeclaration = true};
 
-            var separators = _separators.ToCharArray();
+            var separators = _extraCharsToReplace.ToCharArray();
             
             using (var reader = XmlReader.Create(stream))
             using (var writer = XmlWriter.Create(result, settings))
@@ -300,10 +319,12 @@ namespace EAI.BE.BizTalk.PipelineComponents
                             var sb = new StringBuilder();
                             foreach(var c in value)
                             { 
-                                var translated = c.Translate(targetCharSet,_fallbackChar);
-                                sb.Append(separators.Contains(translated) ? _fallbackChar : translated);
+                                var step1 = c.Translate(targetCharSet,_fallbackChar);
+                                var step2 = separators.Contains(step1) ? _fallbackChar : step1;
+                                var step3 = this.Normalize && char.IsControl(step2) ? ' ' : step2;
+                                sb.Append(step3);
                             }
-                            writer.WriteString(sb.ToString());
+                            writer.WriteString(this.Normalize ? sb.ToString().Trim() : sb.ToString());
                             break;
 
                         case XmlNodeType.EndElement:
